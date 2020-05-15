@@ -12,10 +12,6 @@ var app = express()
 var path = require('path')
 const port = process.env.PORT || 5000;
 
-// Serve static files from the React app
-app.use(express.static('./client/public'));
-
-
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
 app.use(cors())
@@ -28,6 +24,10 @@ app.use(
 )
 const db = require("./config/DB.js");
 db.sequelize.sync();
+
+app.get('/', function (req, res) {
+  res.send(JSON.stringify({ Hello: 'World'}));
+});
 
 //access bueisness route
 var Users = require('./controllers/AuthController.js')
