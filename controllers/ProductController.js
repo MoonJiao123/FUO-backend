@@ -79,7 +79,7 @@ product.get('/:category', (req, res, next) => {
 })
 
 //search by name using like functionality
-product.get('/:name/cheap', (req, res, next) => {
+product.get('/:name/price/asc', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -98,7 +98,7 @@ product.get('/:name/cheap', (req, res, next) => {
 })
 
 //search by name using like functionality
-product.get('/:name/expensive', (req, res, next) => {
+product.get('/:name/price/desc', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -115,5 +115,43 @@ product.get('/:name/expensive', (req, res, next) => {
         })
         .catch(next)
 })
+
+//search by name using like functionality
+product.get('/:name/expire/desc', (req, res, next) => {
+    item.findAll({
+        where: {
+            product_name: {
+                [Op.like]: '%' + req.params.name + '%'
+            }
+        },
+        order: [
+            ['expire_date', 'DESC']
+        ]
+        
+    })
+        .then(function (rowsUpdated) {
+            res.json(rowsUpdated)
+        })
+        .catch(next)
+})
+//search by name using like functionality
+product.get('/:name/expire/asc', (req, res, next) => {
+    item.findAll({
+        where: {
+            product_name: {
+                [Op.like]: '%' + req.params.name + '%'
+            }
+        },
+        order: [
+            ['expire_date', 'ASC']
+        ]
+        
+    })
+        .then(function (rowsUpdated) {
+            res.json(rowsUpdated)
+        })
+        .catch(next)
+})
+
 
 module.exports = product
