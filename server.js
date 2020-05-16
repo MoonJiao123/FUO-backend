@@ -50,9 +50,6 @@ app.get('/api/getList', (req,res) => {
   res.status(200).json({message : 'Sent list of items'});
   //console.log('Sent list of items');
 });
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, './client/public'));
-});
 
 //access API to listen to a port
 app.listen(port, function() {
