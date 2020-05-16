@@ -14,6 +14,7 @@ var Product = db.sequelize.define(
     {
       product_id: {
         type: Sequelize.INTEGER,
+        autoIncrement: true,
         primaryKey: true
       },
       product_name: {

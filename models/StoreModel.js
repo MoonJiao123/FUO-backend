@@ -14,6 +14,7 @@ var Store = db.sequelize.define(
     {
         store_id: {
             type: Sequelize.INTEGER,
+            autoIncrement: true,
             primaryKey: true
         },
         address: {

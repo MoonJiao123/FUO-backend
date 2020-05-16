@@ -15,6 +15,7 @@ var Cart = db.sequelize.define(
   {
     cart_id: {
       type: Sequelize.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     amount: {
@@ -22,23 +23,7 @@ var Cart = db.sequelize.define(
     },
     total_price: {
       type: Sequelize.STRING
-    },
-    // product_id: {
-    //   type: Sequelize.STRING,
-    //   //forerign key
-    //   references: {
-    //     model: 'products',
-    //     key: 'product_id'
-    //   }
-    // },
-    // customer_id: {
-    //   type: Sequelize.STRING,
-    //   //forerign key
-    //   references: {
-    //     model: 'customers',
-    //     key: 'customer_id'
-    //   }
-    // }
+    }
   },
   {
     timestamps: false //Sequelize default to timestamps, set to true if we decide to use it
@@ -46,6 +31,6 @@ var Cart = db.sequelize.define(
 )
 
 Cart.belongsTo(Customer)
-Cart.hasMany(Products)
+Cart.hasMany(Product)
 
-module.exports = Cart
+module.exports = Cart   

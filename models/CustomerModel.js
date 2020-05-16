@@ -14,6 +14,7 @@ module.exports = db.sequelize.define(
     {
       customer_id: {
         type: Sequelize.INTEGER,
+        autoIncrement: true,
         primaryKey: true
       },
       account: {

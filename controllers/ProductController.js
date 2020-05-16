@@ -15,7 +15,6 @@ product.use(cors())
 
 //product upload
 product.post('/upload', (req, res) => {
-    console.log(req.body.coupon);
     const userData = {
         product_name: req.body.product_name,
         product_img: req.body.product_img,

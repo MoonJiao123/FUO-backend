@@ -44,6 +44,21 @@ var Business = require('./controllers/BusinessController.js')
 
 app.use('/business', Business)
 
+//access product_upload route
+var Cart = require('./controllers/BusinessController.js')
+
+app.use('/cart', Cart)
+
+//access product_upload route
+var Cart = require('./controllers/BusinessController.js')
+
+app.use('/cart', Cart)
+
+//access product_upload route
+var Cart = require('./controllers/ShoppingCartController.js')
+
+app.use('/cart', Cart)
+
 app.get('/api/getList', (req,res) => {
   var list = ["item1", "item2", "item3"];
   res.json(list);
