@@ -19,6 +19,7 @@
   "homepage": "https://github.com/MoonJiao123/corona-food-app#readme",
   "dependencies": {
     "barc": "0.0.4",
+    "bcrypt": "^4.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "bwip-js": "^2.0.6",
