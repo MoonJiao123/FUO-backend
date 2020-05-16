@@ -35,14 +35,14 @@ var Users = require('./controllers/AuthController.js')
 app.use('/users', Users)
 
 //access product_upload route
-var Product = require('./controllers/BusinessController.js')
+var Product = require('./controllers/ProductController.js')
 
 app.use('/product', Product)
 
 //access product_upload route
-var Search = require('./controllers/SearchController.js')
+var Business = require('./controllers/BusinessController.js')
 
-app.use('/search', Search)
+app.use('/business', Business)
 
 app.get('/api/getList', (req,res) => {
   var list = ["item1", "item2", "item3"];

@@ -4,66 +4,22 @@
  * 
  * Contributors: Yue Jiao, Yunning Yang
  */
+
 const express = require('express')
-const product = express.Router()
+const Store = express.Router()
 const cors = require('cors')
-const item = require('../models/ProductModel.js')
-product.use(cors())
-product.post('/upload', (req, res) => {
-    console.log(req.body.coupon);
-    const userData = {
-        product_name: req.body.product_name,
-        product_img: req.body.product_img,
-        category: req.body.category,
-        price: req.body.price,
-        expire_date: req.body.expire_date,
-        stock_amount: req.body.stock_amount,
-        coupon: req.body.coupon,
-        store_id: req.body.store_id
-    }
-    //it generate its own token after it created the user
-    item.create(userData)
-        .then(user => {
-            res.json({ status: user.product_name + 'Added coupon to db' })
-        })
-        .catch(err => {
-            res.send('error: ' + err)
-            res.status(400).jason({error: err}) //Shawn
-        })
-})
-
-//update
-product.put('/update', (req, res, next) => {
-    item.update(
-        {
-            product_name: req.body.product_name,
-            product_img: req.body.product_img,
-            category: req.body.category,
-            price: req.body.price,
-            expire_date: req.body.expire_date,
-            stock_amount: req.body.stock_amount,
-            coupon: req.body.coupon,
-            store_id: req.body.store_id
-        },
-        {
-            where: {
-                product_name: req.body.product_name,
-                store_id: req.body.store_id,
-                //make sure the string we store are as correct date form since we are using string now
-                expire_date: req.body.expire_date
-            }
-        })
-        .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
-        })
-        .catch(next)
-})
-
-//search
-product.get('/search/{:category}', (req, res, next) => {
-    item.findAll({
+const store = require('../models/StoreModel.js')
+const { Op } = require("sequelize");
+Store.use(cors())
+//location search
+Store.get('/:address', (req, res, next) => {
+    console.log(req.params.address);
+    //Op = Sequelize.Op;
+    store.findAll({
         where: {
-            category: req.body.category
+            address: { 
+                [Op.like]: req.params.address+'%'
+            }
         }
     })
         .then(function (rowsUpdated) {
@@ -71,4 +27,4 @@ product.get('/search/{:category}', (req, res, next) => {
         })
         .catch(next)
 })
-module.exports = product
+module.exports = Store

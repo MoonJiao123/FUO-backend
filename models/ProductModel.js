@@ -4,12 +4,13 @@
  * Contributors: Yue Jiao, Yunning Yang
  */
 
-const Sequelize = require('sequelize')
+const Sequelize = require('sequelize');
 const db = require('../config/DB.js'); //the connection to database
-
+var Product = require('./StoreModel.js');
+var Store = require('./StoreModel');
 //define products model here, and reflect the fields in our database to BE
 //the value set here should be the same as the value property of the field we created in database
-module.exports = db.sequelize.define(
+var Product = db.sequelize.define(
     "products",
     {
       product_id: {
@@ -37,12 +38,21 @@ module.exports = db.sequelize.define(
       coupon: {
         type: Sequelize.STRING
       },
-      //foreign key
-      store_id: {
-        type: Sequelize.INTEGER
-      }
+      // //foreign key
+      // store_id: {
+      //   type: Sequelize.INTEGER,
+        
+      //   //forerign key
+      //   references: {
+      //     model: 'stores',
+      //     key: 'store_id'
+      //   }
+        
+      // }
     },
     {
       timestamps: false //Sequelize default to timestamps, set to true if we decide to use it
     }
 )
+Product.belongsTo(Store)
+module.exports = Product

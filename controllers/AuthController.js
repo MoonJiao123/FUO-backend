@@ -3,8 +3,11 @@
  * Comparing the requested data with the data we have in database.
  * Return the result of comparison to FE.
  *
- * Contributors: Yue Jiao, Yunning Yang
+ * Contributors: 
+ * 
+ * Yue Jiao, Yunning Yang
  * Shawn - just added res.status().json({}) messages
+ * 
  */
 
 const express = require('express')

@@ -6,10 +6,10 @@
 
 const Sequelize = require('sequelize')
 const db = require('../config/DB.js'); //the connection to database
-
+var Business = require('./BusinessModel.js')
 //define stores model here, and reflect the fields in our database to BE
 //the value set here should be the same as the value property of the field we created in database
-module.exports = db.sequelize.define(
+var Store = db.sequelize.define(
     "stores",
     {
         store_id: {
@@ -19,12 +19,19 @@ module.exports = db.sequelize.define(
         address: {
             type: Sequelize.STRING
         },
-        //foreign key
-        business_id: {
-            type: Sequelize.STRING
-        }
+        // //foreign key
+        // business_id: {
+        //     type: Sequelize.STRING,
+        //     //forerign key
+        //     references: {
+        //         model: 'businesses', 
+        //         key: 'business_id' 
+        //     }
+        // }
     },
     {
         timestamps: false //Sequelize default to timestamps, set to true if we decide to use it
     }
 )
+Store.belongsTo(Business);
+module.exports = Store;
