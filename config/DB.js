@@ -8,8 +8,8 @@ const Sequelize = require('sequelize')
 const DB = {}
 
 //set up connection: Sequelize(database name, user name of local host, password,{})
-const sequelize = new Sequelize('heroku_8af0b174b3133de', 'b1d9fe9f5be15a', '87666a20', {
-    host: 'us-cdbr-east-06.cleardb.net',
+const sequelize = new Sequelize('heroku_90f3403bf02fffe', 'bd778a3ba469c4', '1641b41b', {
+    host: 'us-cdbr-iron-east-01.cleardb.net',
     dialect: 'mysql', //type of the database we use
     operatorsAliases: false, //use to complete comparison, we won't use it yet, so set to false
 
