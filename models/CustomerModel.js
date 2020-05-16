@@ -6,32 +6,33 @@
 
 const Sequelize = require('sequelize')
 const db = require('../config/DB.js'); //the connection to database
-
+//var Cart = require('./CartModel')
 //define consumer user model here, and reflect the fields in our database to BE
 //the value set here should be the same as the value property of the field we created in database
-module.exports = db.sequelize.define(
-    "customers",
-    {
-      customer_id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        primaryKey: true
-      },
-      account: {
-        type: Sequelize.STRING
-      },
-      password: {
-        type: Sequelize.STRING
-      },
-      email: {
-        type: Sequelize.STRING
-      },
-      customer_location: {
-        type: Sequelize.STRING
-      }
+var Customer = db.sequelize.define(
+  "customers",
+  {
+    customer_id: {
+      type: Sequelize.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
     },
-    {
-      timestamps: false //Sequelize default to timestamps, set to true if we decide to use it
+    account: {
+      type: Sequelize.STRING
+    },
+    password: {
+      type: Sequelize.STRING
+    },
+    email: {
+      type: Sequelize.STRING
+    },
+    customer_location: {
+      type: Sequelize.STRING
     }
+  },
+  {
+    timestamps: false //Sequelize default to timestamps, set to true if we decide to use it
+  }
 )
 
+module.exports = Customer;

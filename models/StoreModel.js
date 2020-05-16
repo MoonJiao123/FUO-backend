@@ -34,5 +34,5 @@ var Store = db.sequelize.define(
         timestamps: false //Sequelize default to timestamps, set to true if we decide to use it
     }
 )
-Store.belongsTo(Business);
+Store.belongsTo(Business, {foreignKey: 'business_id'});
 module.exports = Store;

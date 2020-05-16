@@ -27,7 +27,7 @@ Cart.post('/addtocart', (req, res) => {
         amount: req.body.amount,
         total_price: req.body.total_price,
         product_id: req.body.product_id,
-        customerCustomer_id: req.body.customerCustomer_id
+        customer_id: req.body.customer_id
     }
 
     //it generate its own token after it created the user
@@ -37,7 +37,7 @@ Cart.post('/addtocart', (req, res) => {
         })
         .catch(err => {
             res.send('error: ' + err)
-            //res.status(400).jason({ error: err }) //Shawn
+            res.status(400).jason({ error: err }) //Shawn
         })
 })
 

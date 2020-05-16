@@ -44,5 +44,5 @@ var Product = db.sequelize.define(
       timestamps: false //Sequelize default to timestamps, set to true if we decide to use it
     }
 )
-Product.belongsTo(Store)
-module.exports = Product
+Product.belongsTo(Store,{as: 'store_product', foreignKey : 'store_id'});
+module.exports = Product;
