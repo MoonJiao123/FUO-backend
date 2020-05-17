@@ -1,6 +1,5 @@
 /**
  * Description:
- *
  * This file is to set up the customer model for custmer user.
  * The data in this are corresponding to the fields in our database to BE.
  * the type of value here should be the same as the value property of the fields we created in database
@@ -10,7 +9,7 @@
 
 const Sequelize = require('sequelize')
 //the connection to database
-const db = require('../config/DB.js'); 
+const db = require('../config/DB.js');
 //var Cart = require('./CartModel')
 
 //define consumer user model here, and reflect the fields in our database to BE
@@ -39,7 +38,7 @@ var Customer = db.sequelize.define(
   },
   {
     //Sequelize default to timestamps, set to true if we decide to use it
-    timestamps: false 
+    timestamps: false
   }
 )
 

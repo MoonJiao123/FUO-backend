@@ -1,6 +1,5 @@
 /**
  * Description:
- *
  * This file is to set up the business model for business user.
  * The data in this are corresponding to the fields in our database to BE.
  * the type of value here should be the same as the value property of the fields we created in database
@@ -10,7 +9,7 @@
 
 const Sequelize = require('sequelize')
 //the connection to database
-const db = require('../config/DB.js'); 
+const db = require('../config/DB.js');
 
 //define business user model here, and reflect the fields in our database to BE
 //the value set here should be the same as the value property of the field we created in database
