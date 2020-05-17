@@ -17,7 +17,7 @@
  * -app.listen():
  *  Binds and listens for connections on the specified host and port
  *
- * Contributors: Yue Jiao, Yunning Yang
+ * Contributors: Yue Jiao, Yunning Yang, Derek Ta, Shawn Koo 
  */
 
 var express = require('express') //set up middleware for API and allow dynamic rendering of pages
@@ -26,6 +26,9 @@ var bodyParser = require('body-parser') //allow us to extract the data sent from
 var app = express()
 var path = require('path')
 const port = process.env.PORT || 5000;
+
+/* Secret key used for the session*/
+const SESSION_SECRET = 'secret'
 
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
@@ -41,9 +44,25 @@ app.use(
 const db = require("./config/DB.js");
 db.sequelize.sync();
 
+/*Setting up the express sessions for usage*/
+app.use(session({
+  genid: function(req) {
+    return genuuid() // use UUIDs for session IDs
+  },
+  secret: SESSION_SECRET,
+  cookie: {
+    userType: "None",  // Business, Customer
+    user_id: 0
+  }
+}))
+
 // respond with { Hello: 'World' } when a GET request is made to the landing page
 app.get('/', function (req, res) {
   res.send(JSON.stringify({ Hello: 'World' }));
+
+  req.session.reload(function(err) {
+    // Just loaded a session is all from a previous
+  })
 });
 
 //access both business users and customer users route

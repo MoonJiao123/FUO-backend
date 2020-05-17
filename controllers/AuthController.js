@@ -32,11 +32,22 @@ const users = express.Router()
 const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const sessions = require('expression-session')
 users.use(cors())
 const BusinessUser = require('../models/BusinessModel.js')
 const CustomerUser = require('../models/CustomerModel.js')
 
 process.env.SECRET_KEY = 'secret'
+
+/*Use the sessions*/
+
+
+var sess = {
+  secret: 'keyboard cat',
+  cookie: {}
+}
+
+
 
 //Business-SIGNUP
 users.post('/business/register', (req, res) => {
@@ -114,6 +125,12 @@ users.post('/business/login', (req, res) => {
     .catch(err => {
       res.status(400).json({ error: err })
     })
+})
+
+users.get('/login', (req, res) => {
+   var decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY)
+
+   req.session.save()
 })
 
 //PROFILE
@@ -206,7 +223,13 @@ users.post('/customer/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
+          req.session.cookie = JSON.stringify({userType:"customer", user_id: user.customer_id})
+          req.session.save( function(err){
+
+          })
+
           res.send(token)
+
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })
