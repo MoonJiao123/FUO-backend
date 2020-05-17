@@ -14,7 +14,7 @@ product.use(cors())
 
 
 //product upload
-product.post('/upload', (req, res) => {
+product.post('/:store_id/upload', (req, res) => {
     const userData = {
         product_name: req.body.product_name,
         product_img: req.body.product_img,
@@ -23,9 +23,8 @@ product.post('/upload', (req, res) => {
         expire_date: req.body.expire_date,
         stock_amount: req.body.stock_amount,
         coupon: req.body.coupon,
-        store_id: req.body.store_id
+        store_id: req.params.store_id
     }
-
     //it generate its own token after it created the user
     item.create(userData)
         .then(user => {
@@ -38,7 +37,7 @@ product.post('/upload', (req, res) => {
 })
 
 //product update
-product.put('/update', (req, res, next) => {
+product.put('/:store_id/update', (req, res, next) => {
     item.update(
         {
             product_name: req.body.product_name,
@@ -48,7 +47,7 @@ product.put('/update', (req, res, next) => {
             expire_date: req.body.expire_date,
             stock_amount: req.body.stock_amount,
             coupon: req.body.coupon,
-            store_id: req.body.store_id
+            store_id: req.params.store_id
         },
         {
             where: {
@@ -65,7 +64,7 @@ product.put('/update', (req, res, next) => {
 })
 
 //search by category
-product.get('/:category', (req, res, next) => {
+product.get('/category', (req, res, next) => {
     item.findAll({
         where: {
             category: req.params.category
