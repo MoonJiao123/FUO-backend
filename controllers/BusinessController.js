@@ -41,7 +41,20 @@ Store.get('/searchlocation/:business_id/:address', (req, res, next) => {
         })
         .catch(next)
 })
-
+//select location 
+Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
+    //Op = Sequelize.Op;
+    store.findAll({
+        where: {
+            business_id: req.params.business_id,
+            address: req.params.address
+        }
+    })
+        .then(function (rowsUpdated) {
+            res.json(rowsUpdated)
+        })
+        .catch(next)
+})
 //add location 
 Store.post('/addlocation/:business_id/:address', (req, res, next) => {
     const userData = {
