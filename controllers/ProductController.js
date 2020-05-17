@@ -12,7 +12,7 @@
  * Endpoints and Params:
  *  On products upload - (POST) /product/upload/:store_id
  *  On products update - (PUT) /product/update/:store_id
- *  On products delete - (DELETE) /product/delete/:store_id/:item_id
+ *  On products delete - (DELETE) /product/delete/:store_id/:product_id
  *  On item search - (GET) /product/category
  *                 - (GET) /product/:name/price/asc
  *                 - (GET) /product/:name/price/desc
@@ -88,12 +88,12 @@ product.put('/update/:store_id', (req, res, next) => {
 })
 
 //product delete
-product.delete('/delete/:store_id/:item_id', (req, res, next) => {
-    //The destroy method is use to delete selectec instance
+product.delete('/delete/:store_id/:product_id', (req, res, next) => {
+    //The destroy method is use to delete selected instance
     item.destroy({
         where: {
             store_id: req.params.store_id,
-            item_id: req.params.item_id
+            product_id: req.params.product_id
         }
     })
         .then(function (rowsUpdated) {
