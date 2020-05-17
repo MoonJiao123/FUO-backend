@@ -9,7 +9,7 @@ const { Op } = require("sequelize");
 Cart.use(cors())
 
 //show all products in the cart for a customer
-Cart.get('/list/:id', (req, res, next) => {
+Cart.get('/list/:customer_id', (req, res, next) => {
     list.findAll({
         where: {
             customer_id: req.params.id
@@ -22,18 +22,28 @@ Cart.get('/list/:id', (req, res, next) => {
 })
 
 //add item to cart
-Cart.post('/addtocart', (req, res) => {
+Cart.post('/add/:customer_id/:product_id', (req, res) => {
     const userData = {
-        amount: req.body.amount,
-        total_price: req.body.total_price,
-        product_id: req.body.product_id,
-        customer_id: req.body.customer_id
+        //might delete amount and tootal price
+        //amount: req.body.amount,
+        //total_price: req.body.total_price,
+        product_id: req.params.product_id,
+        customer_id: req.params.customer_id
     }
-
-    //it generate its own token after it created the user
-    list.create(userData)
+    list.findOne({
+        where: {
+            product_id: req.params.product_id,
+            customer_id: req.params.customer_id
+        }
+    })
+        //it generate its own token after it created the user
         .then(user => {
-            res.json({ status: user.product_name + 'Added item to cart' })
+            if (!user) {
+                list.create(userData)
+                res.json({ status:  'Added item to cart' })
+
+            }
+            res.json({ status:  'item already exists' })
         })
         .catch(err => {
             res.send('error: ' + err)
@@ -42,10 +52,11 @@ Cart.post('/addtocart', (req, res) => {
 })
 
 //delete item from cart
-Cart.delete('/delete/:id', (req, res, next) => {
-    list.findOne({
+Cart.delete('/delete/:customer_id/:product_id', (req, res, next) => {
+    list.destroy({
         where: {
-            product_id: req.params.product_id
+            product_id: req.params.product_id,
+            customer_id: req.params.customer_id
         }
     })
         .then(function (rowsUpdated) {
