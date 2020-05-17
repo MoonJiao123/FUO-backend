@@ -26,7 +26,7 @@ const db = require("./config/DB.js");
 db.sequelize.sync();
 
 app.get('/', function (req, res) {
-  res.send(JSON.stringify({ Hello: 'World'}));
+  res.send(JSON.stringify({ Hello: 'World' }));
 });
 
 //access bueisness route
@@ -59,15 +59,17 @@ var Cart = require('./controllers/ShoppingCartController.js')
 
 app.use('/cart', Cart)
 
-app.get('/api/getList', (req,res) => {
+app.get('/api/getList', (req, res) => {
+  var list = ["item1", "item2", "item3"];
+})
+app.get('/api/getList', (req, res) => {
   var list = ["item1", "item2", "item3"];
   res.json(list);
-  res.status(200).json({message : 'Sent list of items'});
+  res.status(200).json({ message: 'Sent list of items' });
   //console.log('Sent list of items');
 });
 
 //access API to listen to a port
-app.listen(port, function() {
+app.listen(port, function () {
   console.log('Server is running on port: ' + port)
 })
-
