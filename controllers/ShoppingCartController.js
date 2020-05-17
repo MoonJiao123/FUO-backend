@@ -65,4 +65,17 @@ Cart.delete('/delete/:customer_id/:product_id', (req, res, next) => {
         .catch(next)
 })
 
+//clear all items from cart
+Cart.delete('/delete/:customer_id', (req, res, next) => {
+    list.destroy({
+        where: {
+            customer_id: req.params.customer_id
+        }
+    })
+        .then(function (rowsUpdated) {
+            res.json(rowsUpdated)
+        })
+        .catch(next)
+})
+
 module.exports = Cart
