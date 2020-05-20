@@ -1,6 +1,33 @@
 /**
- * This file is to get the requested data of Uploading information from the business
- * This file also generate barcode when business user input their discount
+ * Description:
+ * This file is to GET the requested data of searching from the business user by the following sorting.
+ *  -price: from high to low
+ *  -price: from low to high
+ *  -expiration date: from close to far
+ *  -expiration date: from far to close
+ * This file is to POST the requested data of uploading items from the business user.
+ * This file is to PUT the requested data of updating items from the business user.
+ * This file is to DELETE the requested data of deleting locations from the business user.
+ * 
+ * Endpoints and Params:
+ *  On products upload - (POST) /product/upload/:store_id
+ *  On products update - (PUT) /product/update/:store_id
+ *  On products delete - (DELETE) /product/delete/:store_id/:product_id
+ *  On item search - (GET) /product/category
+ *                 - (GET) /product/:name/price/asc
+ *                 - (GET) /product/:name/price/desc
+ *                 - (GET) /product/:name/expire/asc
+ *                 - (GET) /product/:name/expire/desc
+ * 
+ * Parameters:
+ *  -req: the request received via the POST request
+ *  -res: the response the server will send back
+ * 
+ * Return Values:
+ *  -200 - OK
+ *   The 200 status code  means that the request was received and understood and is being processed.
+ *  -400 - Bad Request 
+ *   A status code of 400 indicates that the server did not understand the request due to bad syntax.
  * 
  * Contributors: Yue Jiao, Yunning Yang
  */
@@ -14,7 +41,7 @@ product.use(cors())
 
 
 //product upload
-product.post('/upload', (req, res) => {
+product.post('/upload/:store_id', (req, res) => {
     const userData = {
         product_name: req.body.product_name,
         product_img: req.body.product_img,
@@ -23,22 +50,23 @@ product.post('/upload', (req, res) => {
         expire_date: req.body.expire_date,
         stock_amount: req.body.stock_amount,
         coupon: req.body.coupon,
-        store_id: req.body.store_id
+        store_id: req.params.store_id
     }
-
+    //The create method uilds a new model instance and calls save on it.
     //it generate its own token after it created the user
     item.create(userData)
         .then(user => {
-            res.json({ status: user.product_name + 'Added coupon to db' })
+            res.status(200).json({ status: user.product_name + 'Added coupon to db' })
         })
         .catch(err => {
-            res.send('error: ' + err)
-            res.status(400).jason({ error: err }) //Shawn
+            //res.send('error: ' + err)
+            res.status(400).json({ error: err }) //Shawn
         })
 })
 
 //product update
-product.put('/update', (req, res, next) => {
+product.put('/update/:store_id', (req, res, next) => {
+    //The update method updates multiple instances that match the where options.
     item.update(
         {
             product_name: req.body.product_name,
@@ -48,31 +76,48 @@ product.put('/update', (req, res, next) => {
             expire_date: req.body.expire_date,
             stock_amount: req.body.stock_amount,
             coupon: req.body.coupon,
-            store_id: req.body.store_id
+            store_id: req.params.store_id
         },
         {
+            //The where option is used to filter the query.
             where: {
                 product_name: req.body.product_name,
-                store_id: req.body.store_id,
+                store_id: req.params.store_id,
                 //make sure the string we store are as correct date form since we are using string now
                 expire_date: req.body.expire_date
             }
         })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
+        })
+        .catch(next)
+})
+
+//product delete
+product.delete('/delete/:store_id/:product_id', (req, res, next) => {
+    //The destroy method is use to delete selected instance
+    item.destroy({
+        where: {
+            store_id: req.params.store_id,
+            product_id: req.params.product_id
+        }
+    })
+        .then(function (rowsUpdated) {
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
 
 //search by category
 product.get('/:category', (req, res, next) => {
+    //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     item.findAll({
         where: {
             category: req.params.category
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -88,10 +133,10 @@ product.get('/:name/price/asc', (req, res, next) => {
         order: [
             ['price', 'ASC']
         ]
-        
+
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -107,10 +152,10 @@ product.get('/:name/price/desc', (req, res, next) => {
         order: [
             ['price', 'DESC']
         ]
-        
+
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -126,10 +171,10 @@ product.get('/:name/expire/desc', (req, res, next) => {
         order: [
             ['expire_date', 'DESC']
         ]
-        
+
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -144,10 +189,10 @@ product.get('/:name/expire/asc', (req, res, next) => {
         order: [
             ['expire_date', 'ASC']
         ]
-        
+
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })

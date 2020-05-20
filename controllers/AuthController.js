@@ -1,13 +1,30 @@
 /**
- * This file is to get the requested data of login/signup from the BusinessModel.js
- * Comparing the requested data with the data we have in database.
- * Return the result of comparison to FE.
+ * Description:
+ * This file is to POST the requested data of register/login from the business user.
+ * This file is to GET the requested data of profile from the business user.
+ * This file is to POST the requested data of register/login from the customer user.
+ * This file is to GET the requested data of profile from the customer user.
+ * BE will compare the requested data with the data we have in database. Return the result of comparison to FE.
  *
- * Contributors: 
+ * Endpoints and Params:
+ *   On business signup - (POST) /user/business/register 
+ *   On business login - (POST) /user/business/login 
+ *   On customer signup - (POST)  /user/customer/register
+ *   On customer login - (POST) /user/customer/login
  * 
+ * Parameters:
+ *  -req: the request received via the POST request
+ *  -res: the response the server will send back
+ * 
+ * Return Values:
+ *  -200 - OK
+ *   The 200 status code  means that the request was received and understood and is being processed.
+ *  -400 - Bad Request 
+ *   A status code of 400 indicates that the server did not understand the request due to bad syntax.
+ * 
+ * Contributors: 
  * Yue Jiao, Yunning Yang
  * Shawn - just added res.status().json({}) messages
- * 
  */
 
 const express = require('express')
@@ -16,8 +33,8 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 users.use(cors())
-const BUser = require('../models/BusinessModel.js')
-const CUser = require('../models/CustomerModel.js')
+const BusinessUser = require('../models/BusinessModel.js')
+const CustomerUser = require('../models/CustomerModel.js')
 
 process.env.SECRET_KEY = 'secret'
 
@@ -36,8 +53,10 @@ users.post('/business/register', (req, res) => {
     name: req.body.name
   }
 
+  //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
   //since we only use email and password for login, so we only compare email here
-  BUser.findOne({
+  BusinessUser.findOne({
+    //The where option is used to filter the query. 
     where: {
       email: req.body.email
     }
@@ -47,30 +66,31 @@ users.post('/business/register', (req, res) => {
         //if the user does not exist, there is no user with the same email, we will create the user here
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           userData.password = hash
+          //The create method uilds a new model instance and calls save on it.
           //it generate its own token after it created the user
-          BUser.create(userData)
+          BusinessUser.create(userData)
             .then(user => {
-              res.json({ status: user.email + 'Registered!' })
+              //res.json({ status: user.email + 'Registered!' })
+              res.status(200).send(user.account + " registered!");
             })
             .catch(err => {
               //res.send('error: ' + err)
-              res.status(400).json({Error: 'Bad request'}) /* Added by Shawn */
+              res.status(400).json({ Error: 'Bad request!' }) /* Added by Shawn */
             })
         })
       } else {
-        res.json({ error: 'User already exists' })
-        res.status(400).json({Error: 'User already exists'}) /* Added by Shawn */ 
+        res.status(400).json({ Error: 'User already exists' }) /* Added by Shawn */
       }
     })
     .catch(err => {
       //res.send('error: ' + err)
-      res.status(400).json({Error: err}) /* Added by Shawn */
+      res.status(400).json({ Error: err }) /* Added by Shawn */
     })
 })
 
 //Business-LOGIN
 users.post('/business/login', (req, res) => {
-  BUser.findOne({
+  BusinessUser.findOne({
     where: {
       email: req.body.email
     }
@@ -85,7 +105,7 @@ users.post('/business/login', (req, res) => {
             expiresIn: 1440 //lifetime of token
           })
           //res.send(token)
-          res.status(200).json({message: 'User found, authenticated'}) /* Added by Shawn */
+          res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })
@@ -103,7 +123,7 @@ users.get('/business', (req, res) => {
   //it converts token back to the object we created
   var decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY)
 
-  BUser.findOne({
+  BusinessUser.findOne({
     where: {
       id: decoded.id
     }
@@ -111,15 +131,15 @@ users.get('/business', (req, res) => {
     .then(user => {
       if (user) {
         res.json(user)
-        res.status(200).json({message: 'User found, authenticated'}) /* Added by Shawn */
+        res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
       } else {
         //res.send('User does not exist')
-        res.status(400).json({error: 'User does not exist'}) /* Added by Shawn */
+        res.status(400).json({ error: 'User does not exist' }) /* Added by Shawn */
       }
     })
     .catch(err => {
       //res.send('error: ' + err)
-      res.status(400).json({error: err}) /* Added by Shawn */
+      res.status(400).json({ error: err }) /* Added by Shawn */
     })
 })
 
@@ -131,70 +151,70 @@ users.post('/customer/register', (req, res) => {
   console.log(req.body.email); //for testing, can be deleted
 
   const userData = {
-      account: req.body.account,
-      password: bcrypt.hashSync(req.body.password, 8),
-      email: req.body.email,
-      customer_location: req.body.customer_location
+    account: req.body.account,
+    password: bcrypt.hashSync(req.body.password, 8),
+    email: req.body.email,
+    customer_location: req.body.customer_location
   }
 
   //since we only use email and password for login, so we only compare email here
-  CUser.findOne({
-      where: {
-          email: req.body.email
-      }
+  CustomerUser.findOne({
+    where: {
+      email: req.body.email
+    }
   })
-      .then(user => {
-          if (!user) {
-              //if the user does not exist, there is no user with the same email, we will create the user here
-              bcrypt.hash(req.body.password, 10, (err, hash) => {
-                  userData.password = hash
-                  //it generate its own token after it created the user
-                  CUser.create(userData)
-                      .then(user => {
-                          res.json({ status: user.email + 'Registered!' })
-                          res.status(200).json({message: 'Registered!'}) /* added by Shawn*/
-                      })
-                      .catch(err => {
-                          res.send('error: ' + err)
-                          res.status(400).json({error: err}) /* added by Shawn*/
-                      })
-              })
-          } else {
-              //res.json({ error: 'User already exists' })
-              res.status(400).json({error: 'User already exists'}) /* added by Shawn*/
-          }
-      })
-      .catch(err => {
-          //res.send('error: ' + err)
-          res.status(400).json({error: err}) /* added by Shawn*/
-      })
+    .then(user => {
+      if (!user) {
+        //if the user does not exist, there is no user with the same email, we will create the user here
+        bcrypt.hash(req.body.password, 10, (err, hash) => {
+          userData.password = hash
+          //it generate its own token after it created the user
+          CustomerUser.create(userData)
+            .then(user => {
+              //res.json({ status: user.email + 'Registered!' })
+              res.status(200).json({ message: 'Registered!' }) /* added by Shawn*/
+            })
+            .catch(err => {
+              //res.send('error: ' + err)
+              res.status(400).json({ error: err }) /* added by Shawn*/
+            })
+        })
+      } else {
+        //res.json({ error: 'User already exists' })
+        res.status(400).json({ error: 'User already exists' }) /* added by Shawn*/
+      }
+    })
+    .catch(err => {
+      //res.send('error: ' + err)
+      res.status(400).json({ error: err }) /* added by Shawn*/
+    })
 })
 
 //customer-LOGIN
 users.post('/customer/login', (req, res) => {
-  CUser.findOne({
-      where: {
-          email: req.body.email
-      }
+  CustomerUser.findOne({
+    where: {
+      email: req.body.email
+    }
   })
-      .then(user => {
-          if (user) {
-              //if the email exists, compare the password from database
-              //first password comes from FE, second password comes from database
-              if (bcrypt.compareSync(req.body.password, user.password)) {
-                  //jwt will generate a token that will be passing to FE
-                  let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
-                      expiresIn: 1440 //lifetime of token
-                  })
-                  res.send(token)
-              }
-          } else {
-              res.status(400).json({ error: 'User does not exist' })
-          }
-      })
-      .catch(err => {
-          res.status(400).json({ error: err })
-      })
+    .then(user => {
+      if (user) {
+        //if the email exists, compare the password from database
+        //first password comes from FE, second password comes from database
+        if (bcrypt.compareSync(req.body.password, user.password)) {
+          //jwt will generate a token that will be passing to FE
+          let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
+            expiresIn: 1440 //lifetime of token
+          })
+          res.status(200).send(token);
+        }
+      } else {
+        res.status(400).json({ error: 'User does not exist' })
+      }
+    })
+    .catch(err => {
+      res.status(400).json({ error: err })
+    })
 })
 
 //PROFILE
@@ -204,23 +224,23 @@ users.get('/customer', (req, res) => {
   //it converts token back to the object we created
   var decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY)
 
-  CUser.findOne({
-      where: {
-          id: decoded.id
-      }
+  CustomerUser.findOne({
+    where: {
+      id: decoded.id
+    }
   })
-      .then(user => {
-          if (user) {
-              res.json(user)
-              res.status(200).json({message : 'User found'}); /* added by Shawn */
-          } else {
-              //res.send('User does not exist')
-              res.status(400).json({error : 'User does not exist'}); /* added by Shawn */
-          }
-      })
-      .catch(err => {
-          //res.send('error: ' + err)
-          res.status(400).json({error:  err}); /* added by Shawn */
-      })
+    .then(user => {
+      if (user) {
+        res.json(user)
+        res.status(200).json({ message: 'User found' }); /* added by Shawn */
+      } else {
+        //res.send('User does not exist')
+        res.status(400).json({ error: 'User does not exist' }); /* added by Shawn */
+      }
+    })
+    .catch(err => {
+      //res.send('error: ' + err)
+      res.status(400).json({ error: err }); /* added by Shawn */
+    })
 })
 module.exports = users

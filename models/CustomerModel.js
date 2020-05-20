@@ -1,12 +1,17 @@
 /**
- * This file is to set up model for consumer user.
+ * Description:
+ * This file is to set up the customer model for custmer user.
+ * The data in this are corresponding to the fields in our database to BE.
+ * the type of value here should be the same as the value property of the fields we created in database
  *
  * Contributors: Yue Jiao, Yunning Yang
  */
 
 const Sequelize = require('sequelize')
-const db = require('../config/DB.js'); //the connection to database
+//the connection to database
+const db = require('../config/DB.js');
 //var Cart = require('./CartModel')
+
 //define consumer user model here, and reflect the fields in our database to BE
 //the value set here should be the same as the value property of the field we created in database
 var Customer = db.sequelize.define(
@@ -14,6 +19,7 @@ var Customer = db.sequelize.define(
   {
     customer_id: {
       type: Sequelize.INTEGER,
+      //Automatically gets converted to SERIAL for MySQL
       autoIncrement: true,
       primaryKey: true
     },
@@ -31,7 +37,8 @@ var Customer = db.sequelize.define(
     }
   },
   {
-    timestamps: false //Sequelize default to timestamps, set to true if we decide to use it
+    //Sequelize default to timestamps, set to true if we decide to use it
+    timestamps: false
   }
 )
 
