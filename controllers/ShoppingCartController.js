@@ -14,6 +14,8 @@
  *  -res: the response the server will send back
  * 
  * Return Values:
+ *  -200 - OK
+ *   The 200 status code  means that the request was received and understood and is being processed.
  *  -400 - Bad Request 
  *   A status code of 400 indicates that the server did not understand the request due to bad syntax.
  * 
@@ -37,7 +39,7 @@ Cart.get('/list/:customer_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -64,14 +66,16 @@ Cart.post('/add/:customer_id/:product_id', (req, res) => {
                 //The create method uilds a new model instance and calls save on it.
                 //it generate its own token after it created the user
                 list.create(userData)
-                res.json({ status: 'Added item to cart' })
+                res.status(200).json({ status: 'Added item to cart' })
 
             }
-            res.json({ status: 'item already exists' })
+            else{
+                res.status(400).json({ status: 'item already exists' })
+            }
         })
         .catch(err => {
-            res.send('error: ' + err)
-            res.status(400).jason({ error: err }) //Shawn
+            //res.send('error: ' + err)
+            res.status(400).json({ error: err }) //Shawn
         })
 })
 
@@ -85,7 +89,7 @@ Cart.delete('/delete/:customer_id/:product_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -98,7 +102,7 @@ Cart.delete('/delete/:customer_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })

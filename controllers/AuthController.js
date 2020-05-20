@@ -70,15 +70,15 @@ users.post('/business/register', (req, res) => {
           //it generate its own token after it created the user
           BusinessUser.create(userData)
             .then(user => {
-              res.json({ status: user.email + 'Registered!' })
+              //res.json({ status: user.email + 'Registered!' })
+              res.status(200).send(user.account + " registered!");
             })
             .catch(err => {
               //res.send('error: ' + err)
-              res.status(400).json({ Error: 'Bad request' }) /* Added by Shawn */
+              res.status(400).json({ Error: 'Bad request!' }) /* Added by Shawn */
             })
         })
       } else {
-        res.json({ error: 'User already exists' })
         res.status(400).json({ Error: 'User already exists' }) /* Added by Shawn */
       }
     })
@@ -171,11 +171,11 @@ users.post('/customer/register', (req, res) => {
           //it generate its own token after it created the user
           CustomerUser.create(userData)
             .then(user => {
-              res.json({ status: user.email + 'Registered!' })
+              //res.json({ status: user.email + 'Registered!' })
               res.status(200).json({ message: 'Registered!' }) /* added by Shawn*/
             })
             .catch(err => {
-              res.send('error: ' + err)
+              //res.send('error: ' + err)
               res.status(400).json({ error: err }) /* added by Shawn*/
             })
         })
@@ -206,7 +206,7 @@ users.post('/customer/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
-          res.send(token)
+          res.status(200).send(token);
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })
