@@ -105,7 +105,7 @@ users.post('/business/login', (req, res) => {
             expiresIn: 1440 //lifetime of token
           })
           //res.send(token)
-          res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
+          res.status(200).json({ message:'User found, authenticated.' , user_id: user.business_id}) /* Added by Shawn */
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })
@@ -206,7 +206,7 @@ users.post('/customer/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
-          res.status(200).send(token);
+          res.status(200).json({message:'User found, authenticated.' , user_id: user.customer_id})
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })
