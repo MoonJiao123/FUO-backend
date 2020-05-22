@@ -222,22 +222,16 @@ product.get('/:name/price/desc', (req, res, next) => {
 
 //search by products belonging to a certain store
 product.get('/:store_id', (req, res, next) => {
+    //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     item.findAll({
         where: {
-            '$stores.store_id$': req.params.store_id
-        },
-        include: [
-            {model: Store, as: Store.tableName}
-        ]
-
+            store_id: req.params.store_id
+        }
     })
         .then(function (rowsUpdated) {
             res.status(200).json(rowsUpdated)
         })
-        .catch(err => {
-            //res.send('error: ' + err)
-            res.status(400).json({ error: 'Product has no current listings!' })
-          })
+        .catch(next)
 })
 
 
