@@ -76,11 +76,11 @@ Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
         .catch(next)
 })
 //add location 
-Store.post('/addlocation/:business_id/:address', (req, res, next) => {
+Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
     const userData = {
         address: req.params.address,
         business_id: req.params.business_id,
-        store_name: req.params.store_name
+        store_name: req.params.name
     }
     //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
     store.findOne({
