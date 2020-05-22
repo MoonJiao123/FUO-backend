@@ -223,17 +223,13 @@ users.post('/customer/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
-<<<<<<< HEAD
           req.session.cookie = JSON.stringify({userType:"customer", user_id: user.customer_id})
           req.session.save( function(err){
 
           })
 
-          res.send(token)
+          res.send(token);
 
-=======
-          res.status(200).send(token);
->>>>>>> 7f0939cf9661c340c4483b391b95299c58be6a8f
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })
