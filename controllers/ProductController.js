@@ -219,7 +219,6 @@ product.get('/:name/price/desc', (req, res, next) => {
         .catch(next)
 })
 
-
 //search by products belonging to a certain store
 product.get('/:store_id', (req, res, next) => {
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
@@ -233,7 +232,6 @@ product.get('/:store_id', (req, res, next) => {
         })
         .catch(next)
 })
-
 
 //search by name using like functionality
 product.get('/:name/expire/desc', (req, res, next) => {
@@ -253,6 +251,7 @@ product.get('/:name/expire/desc', (req, res, next) => {
         })
         .catch(next)
 })
+
 //search by name using like functionality
 product.get('/:name/expire/asc', (req, res, next) => {
     item.findAll({
@@ -271,6 +270,5 @@ product.get('/:name/expire/asc', (req, res, next) => {
         })
         .catch(next)
 })
-
 
 module.exports = product
