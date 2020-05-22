@@ -36,6 +36,7 @@ const express = require('express')
 const product = express.Router()
 const cors = require('cors')
 const item = require('../models/ProductModel.js')
+const store = require('../models/StoreModel.js')
 const { Op } = require("sequelize");
 product.use(cors())
 
@@ -217,6 +218,28 @@ product.get('/:name/price/desc', (req, res, next) => {
         })
         .catch(next)
 })
+
+
+//search by products belonging to a certain store
+product.get('/:store_id', (req, res, next) => {
+    item.findAll({
+        where: {
+            '$stores.store_id$': req.params.store_id
+        },
+        include: [
+            {model: Store, as: Store.tableName}
+        ]
+
+    })
+        .then(function (rowsUpdated) {
+            res.status(200).json(rowsUpdated)
+        })
+        .catch(err => {
+            //res.send('error: ' + err)
+            res.status(400).json({ error: 'Product has no current listings!' })
+          })
+})
+
 
 //search by name using like functionality
 product.get('/:name/expire/desc', (req, res, next) => {
