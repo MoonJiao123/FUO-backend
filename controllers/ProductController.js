@@ -23,6 +23,12 @@
  *  -req: the request received via the POST request
  *  -res: the response the server will send back
  * 
+ * Return Values:
+ *  -200 - OK
+ *   The 200 status code  means that the request was received and understood and is being processed.
+ *  -400 - Bad Request 
+ *   A status code of 400 indicates that the server did not understand the request due to bad syntax.
+ * 
  * Contributors: Yue Jiao, Yunning Yang
  */
 
@@ -50,11 +56,11 @@ product.post('/upload/:store_id', (req, res) => {
     //it generate its own token after it created the user
     item.create(userData)
         .then(user => {
-            res.json({ status: user.product_name + 'Added coupon to db' })
+            res.status(200).json({ status: user.product_name + 'Added coupon to db' })
         })
         .catch(err => {
-            res.send('error: ' + err)
-            res.status(400).jason({ error: err }) //Shawn
+            //res.send('error: ' + err)
+            res.status(400).json({ error: err }) //Shawn
         })
 })
 
@@ -76,13 +82,13 @@ product.put('/update/:store_id', (req, res, next) => {
             //The where option is used to filter the query.
             where: {
                 product_name: req.body.product_name,
-                store_id: req.body.store_id,
+                store_id: req.params.store_id,
                 //make sure the string we store are as correct date form since we are using string now
                 expire_date: req.body.expire_date
             }
         })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -97,13 +103,13 @@ product.delete('/delete/:store_id/:product_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
 
 //search by category
-product.get('/category', (req, res, next) => {
+product.get('/:category', (req, res, next) => {
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     item.findAll({
         where: {
@@ -111,7 +117,7 @@ product.get('/category', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -130,7 +136,7 @@ product.get('/:name/price/asc', (req, res, next) => {
 
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -149,7 +155,7 @@ product.get('/:name/price/desc', (req, res, next) => {
 
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -168,7 +174,7 @@ product.get('/:name/expire/desc', (req, res, next) => {
 
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -186,7 +192,7 @@ product.get('/:name/expire/asc', (req, res, next) => {
 
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })

@@ -15,6 +15,12 @@
  *  -req: the request received via the POST request
  *  -res: the response the server will send back
  * 
+ * Return Values:
+ *  -200 - OK
+ *   The 200 status code  means that the request was received and understood and is being processed.
+ *  -400 - Bad Request 
+ *   A status code of 400 indicates that the server did not understand the request due to bad syntax.
+ * 
  * Contributors: Yue Jiao, Yunning Yang
  */
 
@@ -34,7 +40,7 @@ Store.get('/printalllocation/:business_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -51,7 +57,7 @@ Store.get('/searchlocation/:business_id/:address', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -65,7 +71,7 @@ Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
@@ -89,14 +95,14 @@ Store.post('/addlocation/:business_id/:address', (req, res, next) => {
                 //The create method uilds a new model instance and calls save on it.
                 //it generate its own token after it created the user
                 store.create(userData)
-                res.json({ status: 'Added item to cart' })
+                res.status(200).json({ status: 'Added item to cart' })
 
             }
-            res.json({ status: 'item already exists' })
+            res.status(400).json({ status: 'item already exists' })
         })
         .catch(err => {
-            res.send('error: ' + err)
-            res.status(400).jason({ error: err }) //Shawn
+            //res.send('error: ' + err)
+            res.status(400).json({ error: err }) //Shawn
         })
 })
 
@@ -110,7 +116,7 @@ Store.delete('/deletelocation/:business_id/:address', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            res.json(rowsUpdated)
+            res.status(200).json(rowsUpdated)
         })
         .catch(next)
 })
