@@ -41,6 +41,10 @@ app.use(cors())
 //App uses the session with the specified information
 app.use(session({
   secret: SESSION_SECRET, 
+  cookie: { /*Everything that you want preserved will go into this cookie*/
+    user_type: "Null", 
+    user_id: 0
+  }
 }))
 
 //parse the data with json, the query string library
