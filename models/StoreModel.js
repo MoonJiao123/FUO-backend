@@ -31,6 +31,9 @@ var Store = db.sequelize.define(
         address: {
             type: Sequelize.STRING
         },
+        store_name: {
+            type: Sequelize.STRING
+        },
         // //foreign key
         // business_id: {
         //     type: Sequelize.STRING,
