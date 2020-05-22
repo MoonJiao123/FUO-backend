@@ -30,9 +30,18 @@ var session = require('express-session')
 
 const port = process.env.PORT || 5000;
 
+//Secret key used by the session
+const SESSION_SECRET = 'session_secret';
+
+
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
 app.use(cors())
+
+//App uses the session with the specified information
+app.use(session({
+  secret: SESSION_SECRET, 
+}))
 
 //parse the data with json, the query string library
 app.use(
