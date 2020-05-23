@@ -29,12 +29,14 @@ const Store = express.Router()
 const cors = require('cors')
 const store = require('../models/StoreModel.js')
 const { Op } = require("sequelize");
+var Sequelize = require('sequelize');
 Store.use(cors())
 
 //print all locations of a business
 Store.get('/printalllocation/:business_id', (req, res, next) => {
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     store.findAll({
+        attributes: ['store_name','address'],
         where: {
             business_id: req.params.business_id,
         }
@@ -45,6 +47,23 @@ Store.get('/printalllocation/:business_id', (req, res, next) => {
         .catch(next)
 })
 
+/* separate functions */
+
+//print all locations of a business
+Store.get('/numoflocations/:business_id', (req, res, next) => {
+    //The findAll method generates a standard SELECT query which will retrieve all entries from the table
+    store.count({
+        distinct: true,
+        col: 'store_id',
+        where: {
+            business_id: req.params.business_id,
+        }
+    })
+        .then(function (count) {
+            res.status(200).json(count)
+        })
+        .catch(next)
+})
 //location search
 Store.get('/searchlocation/:business_id/:address', (req, res, next) => {
     //Op = Sequelize.Op;
