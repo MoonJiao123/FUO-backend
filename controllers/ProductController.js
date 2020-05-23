@@ -36,12 +36,41 @@ const express = require('express')
 const product = express.Router()
 const cors = require('cors')
 const item = require('../models/ProductModel.js')
-const store = require('../models/StoreModel.js')
+//const store = require('../models/StoreModel.js')
 const { Op } = require("sequelize");
 product.use(cors())
+// //product upload
+// product.post('/test/:store_id', (req, res) => {
+//     const userData = {
+//         product_name: req.body.product_name,
+//         product_img: req.body.product_img,
+//         category: req.body.category,
+//         price: req.body.price,
+//         expire_date: req.body.expire_date,
+//         stock_amount: req.body.stock_amount,
+//         coupon: req.body.coupon,
+//         store_id: req.params.store_id
+//     }
 
+//     //The create method uilds a new model instance and calls save on it.
+//     //it generate its own token after it created the user
+//     item.bulkCreate(userData, 
+//         {
+//             updateOnDuplicate: ["product_id","product_name", "product_img", "category","price","expire_date", "stock_amount", "coupon"]
+//         } )
+//         .then(user => {
+//             res.status(200).json({ status: user.product_name + 'Added coupon to db' })
+//         })
+//         .catch(err => {
+//             //res.send('error: ' + err)
+//             res.status(400).json({ error: err }) //Shawn
+//         })
+// })
 //product upsert
-product.put('/upsert/:store_id/:product_id', (req, res, next) => {
+product.post('/upsert/:store_id/:product_id', (req, res, next) => {
+    
+    console.log("product_id "+req.params.product_id);
+    console.log("store_id "+req.params.store_id);
     //The update method updates multiple instances that match the where options.
     const userData = {
         product_name: req.body.product_name,
@@ -53,23 +82,21 @@ product.put('/upsert/:store_id/:product_id', (req, res, next) => {
         coupon: req.body.coupon,
         store_id: req.params.store_id
     }
+    
     item.findOne(
-
         {
             //The where option is used to filter the query.
             where: {
-                product_name: req.body.product_name,
-                store_id: req.params.store_id,
-                //make sure the string we store are as correct date form since we are using string now
-                expire_date: req.body.expire_date
+                product_id: req.params.product_id
             }
         })
         .then(user => {
             if (!user) {
+               
                 item.create(userData)
                     .then(user => {
                         //res.json({ status: user.email + 'Registered!' })
-                        res.status(200).send(user.product_id + " registered!");
+                        res.status(200).send(user.product_id + " created!");
                     })
                     .catch(err => {
                         //res.send('error: ' + err)
@@ -79,10 +106,7 @@ product.put('/upsert/:store_id/:product_id', (req, res, next) => {
                 console.log("product alreday existsed");
                 item.update(userData,{//The where option is used to filter the query.
                     where: {
-                        product_name: req.body.product_name,
-                        store_id: req.params.store_id,
-                        //make sure the string we store are as correct date form since we are using string now
-                        expire_date: req.body.expire_date
+                        product_id: req.params.product_id
                     }})
                     .then(function (rowsUpdated) {
                         console.log("in update functin");
@@ -220,7 +244,8 @@ product.get('/:name/price/desc', (req, res, next) => {
 })
 
 //search by products belonging to a certain store
-product.get('/:store_id', (req, res, next) => {
+product.get('/printallproduct/:store_id', (req, res, next) => {
+    //console.log("param "+req.params.store_id);
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     item.findAll({
         where: {
@@ -228,9 +253,11 @@ product.get('/:store_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
+            //console.log("in then");
             res.status(200).json(rowsUpdated)
         })
         .catch(next)
+        //console.log("after then");
 })
 
 //search by name using like functionality
