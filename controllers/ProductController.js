@@ -38,6 +38,7 @@ const cors = require('cors')
 const item = require('../models/ProductModel.js')
 //const store = require('../models/StoreModel.js')
 const { Op } = require("sequelize");
+
 product.use(cors())
 // //product upload
 // product.post('/test/:store_id', (req, res) => {
@@ -66,6 +67,7 @@ product.use(cors())
 //             res.status(400).json({ error: err }) //Shawn
 //         })
 // })
+
 //product upsert
 product.post('/upsert/:store_id/:product_id', (req, res, next) => {
     
@@ -103,17 +105,16 @@ product.post('/upsert/:store_id/:product_id', (req, res, next) => {
                         res.status(400).json({ Error: 'Bad request!' }) /* Added by Shawn */
                     })
             } else {
-                console.log("product alreday existsed");
+                console.log("product already existed");
                 item.update(userData,{//The where option is used to filter the query.
                     where: {
                         product_id: req.params.product_id
                     }})
                     .then(function (rowsUpdated) {
-                        console.log("in update functin");
+                        console.log("in update function");
                         res.status(200).json(rowsUpdated)
                     })
             }
-            console.log("after else ");
         })
         .catch(err => {
             console.log("some error");
@@ -205,6 +206,23 @@ product.get('/:category', (req, res, next) => {
         .catch(next)
 })
 
+//search by products belonging to a certain store
+product.get('/printallproduct/:store_id', (req, res, next) => {
+    //console.log("param "+req.params.store_id);
+    //The findAll method generates a standard SELECT query which will retrieve all entries from the table
+    item.findAll({
+        where: {
+            store_id: req.params.store_id
+        }
+    })
+        .then(function (rowsUpdated) {
+            //console.log("in then");
+            res.status(200).json(rowsUpdated)
+        })
+        .catch(next)
+    //console.log("after then");
+})
+
 //search by name using like functionality
 product.get('/:name/price/asc', (req, res, next) => {
     item.findAll({
@@ -241,23 +259,6 @@ product.get('/:name/price/desc', (req, res, next) => {
             res.status(200).json(rowsUpdated)
         })
         .catch(next)
-})
-
-//search by products belonging to a certain store
-product.get('/printallproduct/:store_id', (req, res, next) => {
-    //console.log("param "+req.params.store_id);
-    //The findAll method generates a standard SELECT query which will retrieve all entries from the table
-    item.findAll({
-        where: {
-            store_id: req.params.store_id
-        }
-    })
-        .then(function (rowsUpdated) {
-            //console.log("in then");
-            res.status(200).json(rowsUpdated)
-        })
-        .catch(next)
-        //console.log("after then");
 })
 
 //search by name using like functionality
@@ -297,5 +298,8 @@ product.get('/:name/expire/asc', (req, res, next) => {
         })
         .catch(next)
 })
+
+//search by price range
+//
 
 module.exports = product

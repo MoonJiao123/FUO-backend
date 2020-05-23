@@ -15,6 +15,7 @@
 const Sequelize = require('sequelize');
 //the connection to database
 const db = require('../config/DB.js');
+
 var Store = require('./StoreModel');
 
 //define products model here, and reflect the fields in our database to BE

@@ -27,6 +27,7 @@ const Cart = express.Router()
 const cors = require('cors')
 const list = require('../models/CartModel.js')
 const { Op } = require("sequelize");
+
 Cart.use(cors())
 
 //show all products in the cart for a customer

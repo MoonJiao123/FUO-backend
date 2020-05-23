@@ -19,6 +19,7 @@
 const Sequelize = require('sequelize')
 //the connection to database
 const db = require('../config/DB.js');
+
 var Customer = require('./CustomerModel');
 var Product = require('./ProductModel');
 

@@ -25,14 +25,12 @@ var cors = require('cors') // handle the cors domain requests
 var bodyParser = require('body-parser') //allow us to extract the data sent from the FE
 var app = express()
 var path = require('path')
-
 var session = require('express-session')
 
 const port = process.env.PORT || 5000;
 
 //Secret key used by the session
 const SESSION_SECRET = 'session_secret';
-
 
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
