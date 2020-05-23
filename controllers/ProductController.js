@@ -300,6 +300,18 @@ product.get('/:name/expire/asc', (req, res, next) => {
 })
 
 //search by price range
-//
+product.get('/pricerange/:low/:high', (req, res, next) => {
+    item.findAll({
+        where: {
+            price: {
+                [Op.between]:[req.params.low, req.params.high]
+            }
+        }
+    })
+        .then(function (rowsUpdated) {
+            res.status(200).json(rowsUpdated)
+        })
+        .catch(next)
+})
 
 module.exports = product
