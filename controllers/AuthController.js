@@ -120,7 +120,7 @@ users.post('/business/login', (req, res) => {
           res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
         }
       } else {
-        res.status(400).json({ error: 'User does not exist' })
+        res.status(400).json({ error: 'User does not exist' }) //works correctly
       }
     })
     .catch(err => {
@@ -227,11 +227,12 @@ users.post('/customer/login', (req, res) => {
           req.session.userType = "customer"; 
           req.session.userId = user.customer_id;
 
-          res.send(token)
+          res.send(token) // status: 400, response: undefined
 
       }
       } else {
         res.status(400).json({ error: 'User does not exist' })
+        //doesn't work :( only status 400, response doesn't work
       }
     })
     .catch(err => {
