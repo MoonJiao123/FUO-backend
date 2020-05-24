@@ -156,12 +156,15 @@ users.get('/business', (req, res) => {
 })
 
 //customer-SIGNUP
+//note ERROR 500, When god tried testing sign up, request recieved by BE correctly
+//However, Internal server error 500 in backend. need to fix ;-;
 users.post('/customer/register', (req, res) => {
 
   console.log(req.body.name); //for testing, can be deleted
   console.log(req.body); //for testing, can be deleted
   console.log(req.body.email); //for testing, can be deleted
 
+  //Sign up page doesn't have customer_location
   const userData = {
     account: req.body.account,
     password: bcrypt.hashSync(req.body.password, 8),
