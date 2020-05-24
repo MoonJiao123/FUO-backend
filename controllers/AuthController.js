@@ -73,7 +73,7 @@ users.post('/business/register', (req, res) => {
           //it generate its own token after it created the user
           BusinessUser.create(userData)
             .then(user => {
-              res.json({ status: user.email + 'Registered!' })
+              res.status(200).json({ status: user.email + 'Registered!' })
             })
             .catch(err => {
               //res.send('error: ' + err)
@@ -81,7 +81,7 @@ users.post('/business/register', (req, res) => {
             })
         })
       } else {
-        res.json({ error: 'User already exists' })
+        //res.json({ error: 'User already exists' })
         res.status(400).json({ Error: 'User already exists' }) /* Added by Shawn */
       }
     })
