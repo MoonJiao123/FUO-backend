@@ -28,6 +28,7 @@ const express = require('express')
 const Store = express.Router()
 const cors = require('cors')
 const store = require('../models/StoreModel.js')
+const business = require('../models/BusinessModel')
 const { Op } = require("sequelize");
 
 var Sequelize = require('sequelize');
@@ -35,7 +36,20 @@ var Sequelize = require('sequelize');
 Store.use(cors())
 
 /* separate functions : printalllocation and numoflocation */
-
+//endpoint for business name to be displayed in the dashboard
+Store.get('/getbusinessname/:business_id', (req, res, next) => {
+    //The findAll method generates a standard SELECT query which will retrieve all entries from the table
+    business.findOne({
+        attributes: ['name'],
+        where: {
+            business_id: req.params.business_id,
+        }
+    })
+        .then(function (rowsUpdated) {
+            res.status(200).json(rowsUpdated)
+        })
+        .catch(next)
+})
 //print all locations of a business
 Store.get('/printalllocation/:business_id', (req, res, next) => {
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table

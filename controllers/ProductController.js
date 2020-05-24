@@ -98,7 +98,6 @@ product.post('/upsert/:store_id/:product_id', (req, res, next) => {
                
                 item.create(userData)
                     .then(user => {
-                        //res.json({ status: user.email + 'Registered!' })
                         res.status(200).json({ message: req.body }) 
                     })
                     .catch(err => {
