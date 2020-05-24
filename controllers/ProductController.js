@@ -222,17 +222,15 @@ product.get('/:category/:low/:high', (req, res, next) => {
         })
         .catch(next)
 
-    // let categoryofproduct = req.params.category;
-    // let priceFrom = req.params.low;
-    // let priceTo = req.params.high;
     // var options = {where: {}};
     //
-    // if(categoryofproduct) {
-    //     options.where.category = {$in:  categoryofproduct}
+    // if(req.params.category) {
+    //     options.where.category = {$in:  req.params.category}
     // }
-    // if(priceFrom && priceTo) {
-    //     options.where.price = {$between: [priceFrom, priceTo]}
+    // if(req.params.low && req.params.high) {
+    //     options.where.price = {$between: [req.params.low, req.params.high]}
     // }
+    //
     // item.findAll(options)
     //     .then(products => {
     //         console.log(products)
@@ -258,17 +256,15 @@ product.get('/:name/:low/:high/price/asc', (req, res, next) => {
         })
         .catch(next)
 
-    // let nameofproduct = req.params.name;
-    // let priceFrom = req.params.low;
-    // let priceTo = req.params.high;
     // var options = {where: {}};
     //
-    // if(nameofproduct) {
-    //     options.where.name = {$in:  nameofproduct}
+    // if(req.params.name) {
+    //     options.where.product_name = {$in:  {[Op.like]: '%' + req.params.name + '%'}}
     // }
-    // if(priceFrom && priceTo) {
-    //     options.where.price = {$between: [priceFrom, priceTo]}
+    // if(req.params.low && req.params.high) {
+    //     options.where.price = {$between: [req.params.low, req.params.high]}
     // }
+    //
     // item.findAll({
     //      options,
     //      order: [
@@ -299,17 +295,15 @@ product.get('/:name/:low/:high/price/desc', (req, res, next) => {
         })
         .catch(next)
 
-    // let nameofproduct = req.params.name;
-    // let priceFrom = req.params.low;
-    // let priceTo = req.params.high;
     // var options = {where: {}};
     //
-    // if(nameofproduct) {
-    //     options.where.name = {$in:  nameofproduct}
+    // if(req.params.name) {
+    //     options.where.product_name = {$in:  {[Op.like]: '%' + req.params.name + '%'}}
     // }
-    // if(priceFrom && priceTo) {
-    //     options.where.price = {$between: [priceFrom, priceTo]}
+    // if(req.params.low && req.params.high) {
+    //     options.where.price = {$between: [req.params.low, req.params.high]}
     // }
+    //
     // item.findAll({
     //      options,
     //      order: [
@@ -340,21 +334,19 @@ product.get('/:name/:low/:high/expire/asc', (req, res, next) => {
         })
         .catch(next)
 
-    // let nameofproduct = req.params.name;
-    // let priceFrom = req.params.low;
-    // let priceTo = req.params.high;
     // var options = {where: {}};
     //
-    // if(nameofproduct) {
-    //     options.where.name = {$in:  nameofproduct}
+    // if(req.params.name) {
+    //     options.where.product_name = {$in:  {[Op.like]: '%' + req.params.name + '%'}}
     // }
-    // if(priceFrom && priceTo) {
-    //     options.where.price = {$between: [priceFrom, priceTo]}
+    // if(req.params.low && req.params.high) {
+    //     options.where.price = {$between: [req.params.low, req.params.high]}
     // }
+    //
     // item.findAll({
     //      options,
     //      order: [
-    //             ['price', 'ASC']
+    //             ['expire_date', 'ASC']
     //         ]
     //      })
     //     .then(products => {
@@ -381,21 +373,19 @@ product.get('/:name/:low/:high/expire/desc', (req, res, next) => {
         })
         .catch(next)
 
-    // let nameofproduct = req.params.name;
-    // let priceFrom = req.params.low;
-    // let priceTo = req.params.high;
     // var options = {where: {}};
     //
-    // if(nameofproduct) {
-    //     options.where.name = {$in:  nameofproduct}
+    // if(req.params.name) {
+    //     options.where.product_name = {$in:  {[Op.like]: '%' + req.params.name + '%'}}
     // }
-    // if(priceFrom && priceTo) {
-    //     options.where.price = {$between: [priceFrom, priceTo]}
+    // if(req.params.low && req.params.high) {
+    //     options.where.price = {$between: [req.params.low, req.params.high]}
     // }
+    //
     // item.findAll({
     //      options,
     //      order: [
-    //             ['price', 'DESC']
+    //             ['expire_date', 'DESC']
     //         ]
     //      })
     //     .then(products => {
