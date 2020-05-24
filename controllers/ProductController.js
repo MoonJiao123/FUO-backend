@@ -73,6 +73,7 @@ product.post('/upsert/:store_id/:product_id', (req, res, next) => {
     
     console.log("product_id "+req.params.product_id);
     console.log("store_id "+req.params.store_id);
+    console.log("product_name"+req.body.product_name);
     //The update method updates multiple instances that match the where options.
     const userData = {
         product_name: req.body.product_name,

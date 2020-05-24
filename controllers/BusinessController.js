@@ -120,7 +120,7 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
                 //The create method uilds a new model instance and calls save on it.
                 //it generate its own token after it created the user
                 store.create(userData)
-                res.status(200).json({ status: 'Added item to cart' })
+                res.status(200).json({ status: 'Added item to business' })
 
             }
             res.status(400).json({ status: 'item already exists' })
