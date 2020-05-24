@@ -75,16 +75,19 @@ users.post('/business/register', (req, res) => {
           BusinessUser.create(userData)
             .then(user => {
               res.status(200).json({ message: 'Registered!' })
+              // MESSAGE NOT GETTING THROUGH
               console.log(user.email)
             })
             .catch(err => {
               //res.send('error: ' + err)
               res.status(400).json({ Error: 'Bad request Hi Darien' }) /* Added by Shawn */
+              // ERROR MESSAGE NOT GETTING THROUGH
             })
         })
       } else {
         //res.json({ error: 'User already exists' })
         res.status(400).json({ Error: 'User already exists' }) /* Added by Shawn */
+        // ERROR MESSAGE NOT GETTING THROUGH
       }
     })
     .catch(err => {
