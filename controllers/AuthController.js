@@ -79,7 +79,7 @@ users.post('/business/register', (req, res) => {
             })
             .catch(err => {
               //res.send('error: ' + err)
-              res.status(400).json({ Error: 'Bad request' }) /* Added by Shawn */
+              res.status(400).json({ Error: 'Bad request Hi Darien' }) /* Added by Shawn */
             })
         })
       } else {
