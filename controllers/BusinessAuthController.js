@@ -3,7 +3,7 @@
  * Comparing the requested data with the data we have in database.
  * Return the result of comparison to FE.
  *
- * Contributors: Yue Jiao, Yunning Yang, Derek Ta, Darien
+ * Contributors: Yue Jiao, Yunning Yang, Derek Ta, Shawn, Darien
  */
 
 const express = require('express')
@@ -49,7 +49,7 @@ businessUsers.post('/register', (req, res) => {
           //it generate its own token after it created the user
           BUser.create(userData)
             .then(user => {
-              res.status(200).json({ status: user.email + 'Registered!' })
+              res.status(200).json({ status: req.body.email + 'Registered!' })
             })
             .catch(err => {
               res.send('error: ' + err)
@@ -80,7 +80,7 @@ businessUsers.post('/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
-          res.send(token)
+          res.status(200).send(token)
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })
