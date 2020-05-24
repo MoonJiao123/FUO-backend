@@ -54,7 +54,7 @@ Store.get('/getbusinessname/:business_id', (req, res, next) => {
 Store.get('/printalllocation/:business_id', (req, res, next) => {
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     store.findAll({
-        attributes: ['store_name','address'],
+        attributes: ['store_name','address','store_id'],
         where: {
             business_id: req.params.business_id,
         }
