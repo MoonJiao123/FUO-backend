@@ -74,7 +74,8 @@ users.post('/business/register', (req, res) => {
           //it generate its own token after it created the user
           BusinessUser.create(userData)
             .then(user => {
-              res.status(200).json({ status: user.email + 'Registered!' })
+              res.status(200).json({ status: 'Registered!' })
+              console.log(user.email)
             })
             .catch(err => {
               //res.send('error: ' + err)
