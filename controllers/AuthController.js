@@ -25,6 +25,7 @@
  * Contributors: 
  * Yue Jiao, Yunning Yang
  * Shawn - just added res.status().json({}) messages
+ * Darien - debug tweaks
  */
 
 const express = require('express')
@@ -178,7 +179,7 @@ users.post('/customer/register', (req, res) => {
           //it generate its own token after it created the user
           CustomerUser.create(userData)
             .then(user => {
-              res.json({ status: user.email + 'Registered!' })
+              //res.json({ status: user.email + 'Registered!' })
               res.status(200).json({ message: 'Registered!' }) /* added by Shawn*/
             })
             .catch(err => {
