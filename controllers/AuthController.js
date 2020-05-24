@@ -237,7 +237,8 @@ users.post('/customer/login', (req, res) => {
       }
     })
     .catch(err => {
-      res.status(400).json({ error: err })
+      //res.status(400).json({ error: err })
+      res.status(400).json({ error: 'Hi, this is error' })
     })
 })
 
