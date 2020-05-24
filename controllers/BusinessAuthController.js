@@ -3,7 +3,7 @@
  * Comparing the requested data with the data we have in database.
  * Return the result of comparison to FE.
  *
- * Contributors: Yue Jiao, Yunning Yang, Derek Ta
+ * Contributors: Yue Jiao, Yunning Yang, Derek Ta, Darien
  */
 
 const express = require('express')
@@ -60,7 +60,7 @@ businessUsers.post('/register', (req, res) => {
       }
     })
     .catch(err => {
-      res.send('error: ' + err)
+      res.status(400).json({Error:'error: ' + err})
     })
 })
 
