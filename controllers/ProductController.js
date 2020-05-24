@@ -99,7 +99,7 @@ product.post('/upsert/:store_id/:product_id', (req, res, next) => {
                 item.create(userData)
                     .then(user => {
                         //res.json({ status: user.email + 'Registered!' })
-                        res.status(200).send(user.product_id + " created!");
+                        res.status(200).json({ message: 'product uploaded' })
                     })
                     .catch(err => {
                         //res.send('error: ' + err)
