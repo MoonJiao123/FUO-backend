@@ -52,7 +52,7 @@ businessUsers.post('/register', (req, res) => {
               res.status(200).json({ status: req.body.email + 'Registered!' })
             })
             .catch(err => {
-              res.send('error: ' + err)
+              res.status(400).json('error: ' + err)
             })
         })
       } else {
