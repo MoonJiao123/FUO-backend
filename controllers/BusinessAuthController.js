@@ -49,14 +49,14 @@ businessUsers.post('/register', (req, res) => {
           //it generate its own token after it created the user
           BUser.create(userData)
             .then(user => {
-              res.json({ status: user.email + 'Registered!' })
+              res.status(200).json({ status: user.email + 'Registered!' })
             })
             .catch(err => {
               res.send('error: ' + err)
             })
         })
       } else {
-        res.json({ error: 'User already exists' })
+        res.status(400).json({ error: 'User already exists' })
       }
     })
     .catch(err => {
