@@ -113,7 +113,7 @@ users.post('/business/login', (req, res) => {
             expiresIn: 1440 //lifetime of token
           })
           //res.send(token)
-          res.status(200).json({message: token})
+          res.status(200).json({business_id: user.business_id})
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })
