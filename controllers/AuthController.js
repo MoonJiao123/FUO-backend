@@ -112,20 +112,44 @@ users.post('/business/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
-
-          req.session.userType = "business"; 
-          req.session.userId = user.business_id;
-
+          //res.send(token)
           res.status(200).send(token)
-          //res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
         }
       } else {
-        res.status(400).json({ error: 'User does not exist' }) //works correctly
+        res.status(400).json({ error: 'User does not exist' })
       }
     })
     .catch(err => {
       res.status(400).json({ error: err })
     })
+  // BusinessUser.findOne({
+  //   where: {
+  //     email: req.body.email
+  //   }
+  // })
+  //   .then(user => {
+  //     if (user) {
+  //       //if the email exists, compare the password from database
+  //       //first password comes from FE, second password comes from database
+  //       if (bcrypt.compareSync(req.body.password, user.password)) {
+  //         //jwt will generate a token that will be passing to FE
+  //         let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
+  //           expiresIn: 1440 //lifetime of token
+  //         })
+
+  //         //req.session.userType = "business";
+  //         //req.session.userId = user.business_id;
+
+  //         res.status(200).send(token)
+  //         //res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
+  //       }
+  //     } else {
+  //       res.status(400).json({ error: 'User does not exist' }) //works correctly
+  //     }
+  //   })
+  //   .catch(err => {
+  //     res.status(400).json({ error: err })
+  //   })
 })
 
 //PROFILE
@@ -221,25 +245,48 @@ users.post('/customer/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
-          /*req.session.cookie = JSON.stringify({userType:"customer", user_id: user.customer_id})
-          req.session.save(function(err){*/
-
-          req.session.userType = "customer"; 
-          req.session.userId = user.customer_id;
-
-          //res.send(token) // status: 400, response: undefined
-          res.status(200).json({ message: 'User found, authenticated line 231' })
-
-      }
+          res.status(200).send(token)
+        }
       } else {
         res.status(400).json({ error: 'User does not exist' })
-        //doesn't work :( only status 400, response doesn't work
       }
     })
     .catch(err => {
-      //res.status(400).json({ error: err })
-      res.status(400).json({ error: 'Hi, this is error' })
+      res.status(400).json({ error: err })
     })
+  // CustomerUser.findOne({
+  //   where: {
+  //     email: req.body.email
+  //   }
+  // })
+  //   .then(user => {
+  //     if (user) {
+  //       //if the email exists, compare the password from database
+  //       //first password comes from FE, second password comes from database
+  //       if (bcrypt.compareSync(req.body.password, user.password)) {
+  //         //jwt will generate a token that will be passing to FE
+  //         let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
+  //           expiresIn: 1440 //lifetime of token
+  //         })
+  //         /*req.session.cookie = JSON.stringify({userType:"customer", user_id: user.customer_id})
+  //         req.session.save(function(err){*/
+
+  //         //req.session.userType = "customer"; 
+  //         //req.session.userId = user.customer_id;
+
+  //         res.status(200).send(token) // status: 400, response: undefined
+  //         //res.status(200).json({ message: 'User found, authenticated line 231' })
+
+  //       }
+  //     } else {
+  //       res.status(400).json({ error: 'User does not exist' })
+  //       //doesn't work :( only status 400, response doesn't work
+  //     }
+  //   })
+  //   .catch(err => {
+  //     //res.status(400).json({ error: err })
+  //     res.status(400).json({ error: 'Hi, this is error' })
+  //   })
 })
 
 //PROFILE
