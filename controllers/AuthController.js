@@ -201,7 +201,7 @@ users.post('/customer/register', (req, res) => {
     })
     .catch(err => {
       //res.send('error: ' + err)
-      res.status(400).json({ error: err }) /* added by Shawn*/
+      res.status(400).json({ message: req.body }) /* added by Shawn*/
     })
 })
 
