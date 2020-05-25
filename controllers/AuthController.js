@@ -116,8 +116,8 @@ users.post('/business/login', (req, res) => {
           req.session.userType = "business"; 
           req.session.userId = user.business_id;
 
-          //res.send(token)
-          res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
+          res.status(200).send(token)
+          //res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
         }
       } else {
         res.status(400).json({ error: 'User does not exist' }) //works correctly
