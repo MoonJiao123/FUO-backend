@@ -169,7 +169,7 @@ users.post('/customer/register', (req, res) => {
     account: req.body.account,
     password: bcrypt.hashSync(req.body.password, 8),
     email: req.body.email,
-    customer_location: req.body.customer_location
+    //customer_location: req.body.customer_location
   }
 
   //since we only use email and password for login, so we only compare email here
