@@ -187,7 +187,7 @@ users.post('/customer/register', (req, res) => {
           CustomerUser.create(userData)
             .then(user => {
               //res.json({ status: user.email + 'Registered!' })
-              res.status(200).json({ message: 'Registered!' }) /* added by Shawn*/
+              res.status(200).json({ message: req.body }) /* added by Shawn*/
             })
             .catch(err => {
               res.send('error: ' + err)

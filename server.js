@@ -82,6 +82,15 @@ app.get('/api/getList', (req, res) => {
   var list = ["item1", "item2", "item3"];
 })
 
+//access product_upload route
+var Location = require('./controllers/LocationController.js')
+
+app.use('/location', Location)
+
+app.get('/api/getList', (req, res) => {
+  var list = ["item1", "item2", "item3"];
+})
+
 app.get('/api/getList', (req, res) => {
   var list = ["item1", "item2", "item3"];
   res.json(list);
