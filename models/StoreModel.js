@@ -41,9 +41,9 @@ var Store = db.sequelize.define(
         store_long: {
             type: Sequelize.DOUBLE
         },
-        dis_to_customer: {
-            type: Sequelize.DOUBLE
-        },
+        // dis_to_customer: {
+        //     type: Sequelize.DOUBLE
+        // },
         // //foreign key
         // business_id: {
         //     type: Sequelize.STRING,
