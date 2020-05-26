@@ -39,13 +39,17 @@ var request = require('request');
 Store.use(cors())
 
 /* separate functions : printalllocation and numoflocation */
-//endpoint for business name to be displayed in the dashboard
-Store.get('/getbusinessname/:business_id', (req, res, next) => {
+//01-endpoint for business name to be displayed in the dashboard
+Store.get('/getbusinessname', (req, res, next) => {
+    if(req.session.userType == null || req.session.userType != "business"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     business.findOne({
         attributes: ['name'],
         where: {
-            business_id: req.params.business_id,
+            business_id: req.session.userId,
         }
     })
         .then(function (rowsUpdated) {
@@ -53,13 +57,17 @@ Store.get('/getbusinessname/:business_id', (req, res, next) => {
         })
         .catch(next)
 })
-//print all locations of a business
-Store.get('/printalllocation/:business_id', (req, res, next) => {
+//02-print all locations of a business
+Store.get('/printalllocation', (req, res, next) => {
+    if(req.session.userType == null || req.session.userType != "business"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     store.findAll({
         attributes: ['store_name', 'address', 'store_id'],
         where: {
-            business_id: req.params.business_id,
+            business_id: req.session.userId,
         }
     })
         .then(function (rowsUpdated) {
@@ -68,7 +76,7 @@ Store.get('/printalllocation/:business_id', (req, res, next) => {
         .catch(next)
 })
 
-//print number of locations of a business
+//03-print number of locations of a business
 Store.get('/numoflocations', (req, res, next) => {
      //Verify that we have created a session previously
      if(req.session.userType == null || req.session.userType != "business"){
@@ -89,7 +97,7 @@ Store.get('/numoflocations', (req, res, next) => {
         .catch(next)
 })
 
-//location search
+//04-location search
 Store.get('/searchlocation/:address', (req, res, next) => {
     //Verify that we have created a session previously
     if(req.session.userType == null || req.session.userType != "business"){
@@ -112,8 +120,12 @@ Store.get('/searchlocation/:address', (req, res, next) => {
     /*TODO - No handling of case when there are no stores for a business id*/
 })
 
-//select location 
-Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
+//05-select location 
+Store.get('/selectlocation/:address', (req, res, next) => {
+    if(req.session.userType == null || req.session.userType != "business"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
      //Verify that we have created a session previously
     //Op = Sequelize.Op;
     store.findAll({
@@ -129,10 +141,12 @@ Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
 })
 
 
-//add location with latitude and longitude
-
-
-Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
+//06-add location with latitude and longitude
+Store.post('/addlocation/:address/:name', (req, res, next) => {
+    if(req.session.userType == null || req.session.userType != "business"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
     // var storelat;
     // var storelong;
     var reqaddress = req.params.address
@@ -148,7 +162,7 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
     //     });
     const userData = {
         address: req.params.address,
-        business_id: req.params.business_id,
+        business_id: req.session.userId,
         store_name: req.params.name
     }
     // console.log(storelat);
@@ -157,7 +171,7 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
     store.findOne({
         //The where option is used to filter the query.
         where: {
-            business_id: req.params.business_id,
+            business_id: req.session.userId,
             address: req.params.address,
         }
     })
@@ -174,7 +188,7 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
                             { store_lat: res[res.length - 1].latitude, store_long: res[res.length - 1].longitude },
                             {
                                 where: {
-                                    business_id: req.params.business_id,
+                                    business_id: req.session.userId,
                                     address: req.params.address,
                                 }
                             }
@@ -202,12 +216,16 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
         })
 })
 
-//delete location
-Store.delete('/deletelocation/:business_id/:store_id', (req, res, next) => {
+//07-delete location
+Store.delete('/deletelocation/:store_id', (req, res, next) => {
+    if(req.session.userType == null || req.session.userType != "business"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
     //The destroy method is use to delete selectec instance
     store.destroy({
         where: {
-            business_id: req.params.business_id,
+            business_id: req.session.userId,
             store_id: req.params.store_id
         }
     })

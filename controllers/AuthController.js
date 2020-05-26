@@ -250,7 +250,6 @@ users.get('/logout', (req, res) => {
   req.session.destroy(function(err) {
     console.log('LOGOUT() - Logging out user')
     console.log('SESSION SUCCESSFULY DESTROYED')
-    console.log('Business ID: ' + req.session.userType)
   })
 
   res.status(200).json({message:'User successfully logged out!'});

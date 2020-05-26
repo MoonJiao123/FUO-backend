@@ -31,10 +31,10 @@ const { Op } = require("sequelize");
 Cart.use(cors())
 
 //show all products in the cart for a customer
-Cart.get('/list/:customer_id', (req, res, next) => {
+Cart.get('/list', (req, res, next) => {     // Changed '/list/:customer_id' to /list'
     //Verify that we have created a session previously
     if(req.session.userType ==  null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
+        res.status(400).json({error:'Please create sessions'});
         return;
     }
 
@@ -52,19 +52,24 @@ Cart.get('/list/:customer_id', (req, res, next) => {
 })
 
 //add item to cart
-Cart.post('/add/:customer_id/:product_id', (req, res) => {
+Cart.post('/add/:product_id', (req, res) => {
+    //Verify that we have created a session previously
+    if(req.session.userType ==  null || req.session.userType != "customer"){
+        res.status(400).json({error:'Please create sessions'});
+        return;
+    }
     const userData = {
         //might delete amount and tootal price
         //amount: req.body.amount,
         //total_price: req.body.total_price,
         product_id: req.params.product_id,
-        customer_id: req.params.customer_id
+        customer_id: req.session.userId
     }
     //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
     list.findOne({
         where: {
             product_id: req.params.product_id,
-            customer_id: req.params.customer_id
+            customer_id: req.session.userId
         }
     })
         //it generate its own token after it created the user
@@ -87,12 +92,17 @@ Cart.post('/add/:customer_id/:product_id', (req, res) => {
 })
 
 //delete item from cart
-Cart.delete('/delete/:customer_id/:product_id', (req, res, next) => {
+Cart.delete('/delete/:product_id', (req, res, next) => {
+    //Verify that we have created a session previously
+    if(req.session.userType ==  null || req.session.userType != "customer"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
     //The destroy method is use to delete selectec instance
     list.destroy({
         where: {
             product_id: req.params.product_id,
-            customer_id: req.params.customer_id
+            customer_id: req.session.userId
         }
     })
         .then(function (rowsUpdated) {
@@ -102,10 +112,16 @@ Cart.delete('/delete/:customer_id/:product_id', (req, res, next) => {
 })
 
 //clear all items from cart
-Cart.delete('/delete/:customer_id', (req, res, next) => {
+Cart.delete('/delete', (req, res, next) => {
+    
+    if(req.session.userType ==  null || req.session.userType != "customer"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
+
     list.destroy({
         where: {
-            customer_id: req.params.customer_id
+            customer_id: req.session.userId
         }
     })
         .then(function (rowsUpdated) {
