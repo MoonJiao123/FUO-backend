@@ -40,8 +40,9 @@ const CustomerUser = require('../models/CustomerModel.js')
 
 process.env.SECRET_KEY = 'secret'
 
-/*Use the sessions*/
-
+/*ACCESS ACCOUNT*/
+//homedepot@homedepot.com
+//homedepotiscool1
 //Business-SIGNUP
 users.post('/business/register', (req, res) => {
 
@@ -104,19 +105,28 @@ users.post('/business/login', (req, res) => {
     }
   })
     .then(user => {
+      console.log('Found business user');
       if (user) {
-        //if the email exists, compare the password from database
+        //if the email exists, compare the password from databas
+        console.log('Comparing password');
         //first password comes from FE, second password comes from database
         if (bcrypt.compareSync(req.body.password, user.password)) {
           //jwt will generate a token that will be passing to FE
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
-          //res.send(token)
-          res.status(200).json({business_id: user.business_id})
+          
+          //Login to the business users
+          req.session.userType = "business";
+          req.session.userId = user.business_id;
+          req.session.save(); 
+
+          res.status(200).json({userType: req.session.userType, business_id: user.business_id})
+        }else{ //Login failed
+          res.status(400).json({error: 'Email or password mismatch'})
         }
       } else {
-        res.status(400).json({ error: 'User does not exist' })
+        res.status(400).json({ error: 'Email or password mismatch' })
       }
     })
     .catch(err => {
@@ -289,6 +299,50 @@ users.post('/customer/login', (req, res) => {
   //   })
 })
 
+
+/* Description: 
+ * POST endpoint to which the user can generate the API secret
+ * Client will have its ClientID and ClientSecret stored in the database, these will be 
+ * used with the OAuth2.0 server as a request token to get an access token which will expire after not 
+ * being used for a certain amount of time. 
+ * 
+ * We will use the client ID as the request token, the api_key field in the model will be the secret 
+ *  Link to tutorial: https://www.sohamkamani.com/blog/javascript/2018-06-24-oauth-with-node-js/
+ * 
+ * Request format: 
+ *   - session: the session from which the api key generation is being routed (generated from the front end)
+ *              we will use the session to infer which business user the api key is being generated for 
+ *              - email 
+ *              - business id 
+ * 
+ * Parameters: 
+ *    req: the request received via the POST request
+ *    res: the response the server will send back 
+ * Return Values: 
+ *    201 (Created) - "Successfully generated API secret" - Indicates successful generation and storage into DB of api secret
+ *    401 (Unauthorized) - "Invalid business user session" - Indicates that api key generation was unsuccessful due to the user
+ *                                                           requesting from an invalid session (not logged in)
+ *    404 (Not Found) -  "Invalid request parameter" - Database wasn't able to find the corresponding business user 
+ */
+/*businessUsers.post('/business/api/generate_api_key', (req, res) => {
+  /* Should have the email stored in the session for now*/
+/*  var session = req.session 
+
+  BUser.findOne({
+    where: {
+      email: session.email
+    }
+  })
+    .then(user => {
+      BAPI.generateApiKey(req,res)
+    })
+    .catch(err => {
+      //res.send('error: ' + err)
+      res.status(400).json({error: err}) //Shawn
+    })
+})
+
+
 //PROFILE
 //to fetch profile from FE.
 users.get('/customer', (req, res) => {
@@ -305,14 +359,14 @@ users.get('/customer', (req, res) => {
       if (user) {
         res.json(user)
         res.status(200).json({ message: 'User found' }); /* added by Shawn */
-      } else {
+ /*     } else {
         //res.send('User does not exist')
         res.status(400).json({ error: 'User does not exist' }); /* added by Shawn */
-      }
+ /*     }
     })
     .catch(err => {
       //res.send('error: ' + err)
       res.status(400).json({ error: err }); /* added by Shawn */
-    })
-})
+/*    })
+})*/
 module.exports = users

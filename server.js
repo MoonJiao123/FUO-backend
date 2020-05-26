@@ -27,28 +27,41 @@ var app = express()
 var path = require('path')
 var session = require('express-session')
 
+const uuid = require('uuid/v4')
+const redis = require('redis')
+const redisStore = require('connect-redis')(session); 
+
 const port = process.env.PORT || 5000;
-MemcachedStore = require("connect-memcached")(session);
+
 
 //Secret key used by the session
 const SESSION_SECRET = 'session_secret';
 const MEMCACHED_SECRET = 'memcached_secret';
 
+//Create the client
+const redisClient = redis.createClient();
+
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
 app.use(cors())
 
+//Create redis client( session server)
+redisClient.on('error', (err) => {
+  console.log('Redis Session Error: ', err)
+});
+
 //App uses the session with the specified information
 app.use(session({
+  genid: (req) =>{
+    return uuid()
+  },
   secret: SESSION_SECRET,
   resave: false,
-  saveUninitialized: false,
-  store: new MemcachedStore({
-    hosts: ["127.0.0.1:11211"],
-    secret: MEMCACHED_SECRET
-  })
-})
-); 
+  saveUninitialized: true,
+  store: new redisStore({host:'localhost', port: 6379, client:redisClient}),
+  name: '_userSession', 
+  cookie: { secure: false, userType:'None', userId: 0}
+})); 
 
 //parse the data with json, the query string library
 app.use(
@@ -62,7 +75,14 @@ db.sequelize.sync();
 
 // respond with { Hello: 'World' } when a GET request is made to the landing page
 app.get('/', function (req, res) {
-  res.send(JSON.stringify({ Hello: 'World' }));
+  //Initializing 
+  if(req.session.cookie.userId == null)
+    req.session.cookie.userId = 0; 
+
+  
+  req.session.cookie.userId++; 
+  req.session.save();
+  res.send(JSON.stringify({SessionID: req.sessionID, Views: req.session.cookie.userId == null}))
 });
 
 //access both business users and customer users route
@@ -109,3 +129,4 @@ app.get('/api/getList', (req, res) => {
 app.listen(port, function () {
   console.log('Server is running on port: ' + port)
 })
+
