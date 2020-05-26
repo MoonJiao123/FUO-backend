@@ -199,12 +199,12 @@ Store.delete('/deletelocation/:business_id/:store_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
-            //delete product when delete the store
-            request('https://fuo-backend.herokuapp.com/deleteallproduct/req.params.store_id', function (error) {
-                if (!error && response.statusCode == 200) {
-                    console.log("deleted all prodcut of store_id" + req.params.store_id)
-                }
-            })
+            // //delete product when delete the store
+            // request('https://fuo-backend.herokuapp.com/deleteallproduct/req.params.store_id', function (error) {
+            //     if (!error && response.statusCode == 200) {
+            //         console.log("deleted all prodcut of store_id" + req.params.store_id)
+            //     }
+            // })
             res.status(200).json(rowsUpdated)
         })
         .catch(next)
