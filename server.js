@@ -28,9 +28,11 @@ var path = require('path')
 var session = require('express-session')
 
 const port = process.env.PORT || 5000;
+MemcachedStore = require("connect-memcached")(session);
 
 //Secret key used by the session
 const SESSION_SECRET = 'session_secret';
+const MEMCACHED_SECRET = 'memcached_secret';
 
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
@@ -40,8 +42,13 @@ app.use(cors())
 app.use(session({
   secret: SESSION_SECRET,
   resave: false,
-  saveUninitialized: true
-}))
+  saveUninitialized: false,
+  store: new MemcachedStore({
+    hosts: ["127.0.0.1:11211"],
+    secret: MEMCACHED_SECRET
+  })
+})
+); 
 
 //parse the data with json, the query string library
 app.use(
