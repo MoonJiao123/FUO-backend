@@ -34,6 +34,12 @@ var Customer = db.sequelize.define(
     },
     customer_location: {
       type: Sequelize.STRING
+    },
+    customer_lat: {
+      type: Sequelize.DOUBLE
+    },
+    customer_long: {
+      type: Sequelize.DOUBLE
     }
   },
   {

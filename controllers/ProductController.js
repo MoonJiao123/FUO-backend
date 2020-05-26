@@ -192,6 +192,18 @@ product.delete('/delete/:store_id/:product_id', (req, res, next) => {
         .catch(next)
 })
 
+//product delete all
+product.delete('/deleteallproduct/:store_id', (req, res, next) => {
+    //The destroy method is use to delete selected instance
+    item.destroy({
+        where: {store_id: req.params.store_id},
+    })
+        .then(function (rowsUpdated) {
+            res.status(200).json(rowsUpdated)
+        })
+        .catch(next)
+})
+
 //search by products belonging to a certain store
 product.get('/printallproduct/:store_id', (req, res, next) => {
     //console.log("param "+req.params.store_id);

@@ -30,9 +30,11 @@ const cors = require('cors')
 const store = require('../models/StoreModel.js')
 const business = require('../models/BusinessModel')
 const { Op } = require("sequelize");
-
 var Sequelize = require('sequelize');
-
+let nodeGeocoder = require('node-geocoder');
+let options = { provider: 'openstreetmap' };
+let geoCoder = nodeGeocoder(options);
+var request = require('request');
 Store.use(cors())
 
 /* separate functions : printalllocation and numoflocation */
@@ -54,7 +56,7 @@ Store.get('/getbusinessname/:business_id', (req, res, next) => {
 Store.get('/printalllocation/:business_id', (req, res, next) => {
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     store.findAll({
-        attributes: ['store_name','address','store_id'],
+        attributes: ['store_name', 'address', 'store_id'],
         where: {
             business_id: req.params.business_id,
         }
@@ -113,13 +115,31 @@ Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
         .catch(next)
 })
 
-//add location 
+
+//add location with latitude and longitude
+
+
 Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
+    // var storelat;
+    // var storelong;
+    var reqaddress = req.params.address
+    // //convert address to lat and long
+    // geoCoder.geocode(reqaddress)
+    //     .then((res) => {
+    //         console.log(res);
+    //         storelat = res[res.length - 1].latitude;
+    //         storelong = res[res.length - 1].longitude
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     });
     const userData = {
         address: req.params.address,
         business_id: req.params.business_id,
         store_name: req.params.name
     }
+    // console.log(storelat);
+    // console.log(storelong);
     //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
     store.findOne({
         //The where option is used to filter the query.
@@ -134,10 +154,34 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
                 //The create method uilds a new model instance and calls save on it.
                 //it generate its own token after it created the user
                 store.create(userData)
+                geoCoder.geocode(reqaddress)
+                    .then((res) => {
+                        console.log(res);
+                        store.update(
+                            { store_lat: res[res.length - 1].latitude, store_long: res[res.length - 1].longitude },
+                            {
+                                where: {
+                                    business_id: req.params.business_id,
+                                    address: req.params.address,
+                                }
+                            }
+                        ).then(result =>
+                            console.log("converted address to long and lat")
+                        )
+                            .error(err =>
+                                handleError(err)
+                            )
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
                 res.status(200).json({ status: 'Added item to business' })
 
             }
-            res.status(400).json({ status: 'item already exists' })
+            else {
+                res.status(400).json({ status: 'item already exists' })
+            }
         })
         .catch(err => {
             //res.send('error: ' + err)
@@ -146,18 +190,30 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
 })
 
 //delete location
-Store.delete('/deletelocation/:business_id/:address', (req, res, next) => {
+Store.delete('/deletelocation/:business_id/:store_id', (req, res, next) => {
     //The destroy method is use to delete selectec instance
     store.destroy({
         where: {
             business_id: req.params.business_id,
-            address: req.params.address
+            store_id: req.params.store_id
         }
     })
         .then(function (rowsUpdated) {
+            //delete product when delete the store
+            request('localhost:5000/deleteallproduct/req.params.store_id', function (error) {
+                if (!error && response.statusCode == 200) {
+                    console.log("deleted all prodcut of store_id" + req.params.store_id)
+                }
+            })
             res.status(200).json(rowsUpdated)
         })
         .catch(next)
+
+
+
+
 })
+
+
 
 module.exports = Store
