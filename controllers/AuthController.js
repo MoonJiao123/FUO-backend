@@ -26,6 +26,7 @@
  * Yue Jiao, Yunning Yang
  * Shawn - just added res.status().json({}) messages
  * Darien - debug tweaks
+ * Derek - implemented the logout function and added various session
  */
 
 const express = require('express')
@@ -99,6 +100,7 @@ users.post('/business/register', (req, res) => {
 
 //Business-LOGIN
 users.post('/business/login', (req, res) => {
+  /*TODO - HANDLE CASE WHEN EMAIL IS NULL!*/
   BusinessUser.findOne({
     where: {
       email: req.body.email
@@ -239,6 +241,25 @@ users.post('/customer/register', (req, res) => {
     })
 })
 
+//LOGOUT - KILL THE SESSION AND WIPE TEH COOKIE
+users.get('/logout', (req, res) => {
+  //to verify authorization sent from FE with secret key
+  //it converts token back to the object we created
+  //var decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY)
+  console.log('Business ID: ' + req.session.userType)
+  req.session.destroy(function(err) {
+    console.log('LOGOUT() - Logging out user')
+    console.log('SESSION SUCCESSFULY DESTROYED')
+    console.log('Business ID: ' + req.session.userType)
+  })
+
+  res.status(200).json({message:'User successfully logged out!'});
+})
+/*
+"message": {
+  "name": "tekashisixnine@prison.edu",
+  "password": "gummo6969"
+}*/
 //customer-LOGIN
 users.post('/customer/login', (req, res) => {
   CustomerUser.findOne({
@@ -255,7 +276,18 @@ users.post('/customer/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
-          res.status(200).json({message: token})
+
+              
+          //Login to the business users
+          req.session.userType = "customer";
+          req.session.userId = user.customer_id;
+          req.session.save(); 
+
+
+          res.status(200).json({message: req.session.userType})
+        }
+        else{ //Login failed
+          res.status(400).json({error: 'Email or password mismatch'})
         }
       } else {
         res.status(400).json({ error: 'User does not exist' })

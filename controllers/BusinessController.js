@@ -69,13 +69,18 @@ Store.get('/printalllocation/:business_id', (req, res, next) => {
 })
 
 //print number of locations of a business
-Store.get('/numoflocations/:business_id', (req, res, next) => {
+Store.get('/numoflocations', (req, res, next) => {
+     //Verify that we have created a session previously
+     if(req.session.userType == null || req.session.userType != "business"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     store.count({
         distinct: true,
         col: 'store_id',
         where: {
-            business_id: req.params.business_id,
+            business_id: req.session.userId,
         }
     })
         .then(function (count) {
@@ -85,10 +90,10 @@ Store.get('/numoflocations/:business_id', (req, res, next) => {
 })
 
 //location search
-Store.get('/searchlocation/:business_id/:address', (req, res, next) => {
+Store.get('/searchlocation/:address', (req, res, next) => {
     //Verify that we have created a session previously
-    if(req.session.userType != null && req.session.userType == "business"){
-        res.status(400).json({error:'Session was created'});
+    if(req.session.userType == null || req.session.userType != "business"){
+        res.status(400).json({error:'Session was never created'});
         return;
     }
 
@@ -104,14 +109,16 @@ Store.get('/searchlocation/:business_id/:address', (req, res, next) => {
             res.status(200).json(rowsUpdated)
         })
         .catch(next)
+    /*TODO - No handling of case when there are no stores for a business id*/
 })
 
 //select location 
 Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
+     //Verify that we have created a session previously
     //Op = Sequelize.Op;
     store.findAll({
         where: {
-            business_id: req.params.business_id,
+            business_id: req.session.userId,
             address: req.params.address
         }
     })

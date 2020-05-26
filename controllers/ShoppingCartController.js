@@ -21,7 +21,7 @@
  * 
  * Contributors: Yue Jiao, Yunning Yang
  */
-
+//21	Byrom	XY5GJIwLL	bbehninck0@seattletimes.com	17133 Sunfield Center	NULL	NULL
 const express = require('express')
 const Cart = express.Router()
 const cors = require('cors')
@@ -32,11 +32,17 @@ Cart.use(cors())
 
 //show all products in the cart for a customer
 Cart.get('/list/:customer_id', (req, res, next) => {
+    //Verify that we have created a session previously
+    if(req.session.userType ==  null || req.session.userType != "customer"){
+        res.status(400).json({error:'Session was never created'});
+        return;
+    }
+
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     list.findAll({
         //The where option is used to filter the query.
         where: {
-            customer_id: req.params.id
+            customer_id: req.session.userId
         }
     })
         .then(function (rowsUpdated) {
