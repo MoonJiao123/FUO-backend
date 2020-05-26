@@ -200,7 +200,7 @@ Store.delete('/deletelocation/:business_id/:store_id', (req, res, next) => {
     })
         .then(function (rowsUpdated) {
             //delete product when delete the store
-            request('localhost:5000/deleteallproduct/req.params.store_id', function (error) {
+            request('https://fuo-backend.herokuapp.com/deleteallproduct/req.params.store_id', function (error) {
                 if (!error && response.statusCode == 200) {
                     console.log("deleted all prodcut of store_id" + req.params.store_id)
                 }
