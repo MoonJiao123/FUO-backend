@@ -25,6 +25,7 @@
  */
 
 const express = require('express')
+const sessions = require('express-session')
 const Store = express.Router()
 const cors = require('cors')
 const store = require('../models/StoreModel.js')
@@ -85,10 +86,15 @@ Store.get('/numoflocations/:business_id', (req, res, next) => {
 
 //location search
 Store.get('/searchlocation/:business_id/:address', (req, res, next) => {
-    //Op = Sequelize.Op;
+    //Verify that we have created a session previously
+    if(req.session.userType != null && req.session.userType == "business"){
+        res.status(400).json({error:'Session was created'});
+        return;
+    }
+
     store.findAll({
         where: {
-            business_id: req.params.business_id,
+            business_id: req.session.userId,
             address: {
                 [Op.like]: '%' + req.params.address + '%'
             }
