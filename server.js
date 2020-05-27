@@ -58,7 +58,7 @@ app.use(session({
     return uuid()
   },
   secret: SESSION_SECRET,
-  resave: false,
+  resave: true,
   saveUninitialized: true,
   cookie: { secure: true}
 })); 
