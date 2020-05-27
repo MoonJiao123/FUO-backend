@@ -23,10 +23,11 @@
  */
 //21	Byrom	XY5GJIwLL	bbehninck0@seattletimes.com	17133 Sunfield Center	NULL	NULL
 const express = require('express')
+const sessions = require('express-session')
 const Cart = express.Router()
 const cors = require('cors')
 const list = require('../models/CartModel.js')
-const { Op } = require("sequelize");
+const { Op } = require("sequelize")
 
 Cart.use(cors())
 

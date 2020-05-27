@@ -2,6 +2,7 @@ const express = require('express')
 const Location = express.Router()
 const cors = require('cors')
 const location = require('../models/StoreModel.js')
+const product = require('../models/ProductModel.js')
 const customer = require('../models/CustomerModel.js')
 var nodeGeocoder = require('node-geocoder');
 var options = {provider: 'openstreetmap'};
