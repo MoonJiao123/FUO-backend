@@ -26,7 +26,7 @@ var bodyParser = require('body-parser') //allow us to extract the data sent from
 var app = express()
 var path = require('path')
 var session = require('express-session')
-var client = require('redis').createClient(process.env.REDIS_URL);
+var redisClient = require('redis').createClient(process.env.REDIS_URL);
 const uuid = require('uuid/v4')
 const redis = require('redis')
 const redisStore = require('connect-redis')(session); 
@@ -39,7 +39,7 @@ const SESSION_SECRET = 'session_secret';
 const MEMCACHED_SECRET = 'memcached_secret';
 
 //Create the client
-const redisClient = redis.createClient();
+//const redisClient = redis.createClient();
 
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
@@ -52,6 +52,7 @@ redisClient.on('error', (err) => {
 
 //App uses the session with the specified information
 //try to connect to heroku using the heroku url insteam of local
+app.set('trust proxy', 1);
 app.use(session({
   genid: (req) =>{
     return uuid()
@@ -59,9 +60,7 @@ app.use(session({
   secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  store: new redisStore({host:'localhost', port: 6379, client:redisClient}),
-  name: '_userSession', 
-  cookie: { secure: false, userType:'None', userId: 0}
+  cookie: { secure: true}
 })); 
 
 //parse the data with json, the query string library
