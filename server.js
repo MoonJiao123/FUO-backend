@@ -63,6 +63,7 @@ app.use(session({
   cookie: { secure: true, httpOnly: false}
 })); 
 
+
 //parse the data with json, the query string library
 app.use(
   bodyParser.urlencoded({
@@ -125,6 +126,28 @@ app.get('/api/getList', (req, res) => {
   //console.log('Sent list of items');
 });
 
+const corsOptions = {
+  origin: /\.your.domain\.com$/,    // reqexp will match all prefixes
+  methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
+  credentials: true,                // required to pass
+  allowedHeaders: "Content-Type, Authorization, X-Requested-With",
+}
+// intercept pre-flight check for all routes
+app.options('*', cors(corsOptions))
+const isCookieSecure = 
+  process.env.NODE_ENV === "production" ? true : false;
+// add cors middleware to route 
+app.get("/cookie", cors(corsOptions), (req, res) => {
+  const options = {
+    secure: isCookieSecure,
+    httpOnly: isCookieSecure,
+    domain: ".your.domain.com"
+  }
+return res
+    .cookie("cookieName", "cookieValue", options)
+    .status(200)
+    .send("cookie sent")
+})
 //access API to listen to a port
 app.listen(port, function () {
   console.log('Server is running on port: ' + port)
