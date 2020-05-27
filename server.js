@@ -60,7 +60,7 @@ app.use(session({
   secret: SESSION_SECRET,
   resave: true,
   saveUninitialized: true,
-  cookie: { secure: true}
+  cookie: { secure: true, httpOnly: true}
 })); 
 
 //parse the data with json, the query string library
