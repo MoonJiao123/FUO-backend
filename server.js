@@ -80,7 +80,8 @@ app.get('/', function (req, res) {
   if(req.session.cookie.userId == null)
     req.session.cookie.userId = 0; 
 
-  
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   req.session.cookie.userId++; 
   req.session.save();
   res.send(JSON.stringify({SessionID: req.sessionID, Views: req.session.cookie.userId == null}))
@@ -89,7 +90,11 @@ app.get('/', function (req, res) {
 //access both business users and customer users route
 var Users = require('./controllers/AuthController.js')
 
-app.use('/users', Users)
+app.use('/users', Users, function(req,res){
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next;
+})
 
 //access product management route
 var Product = require('./controllers/ProductController.js')
@@ -126,28 +131,7 @@ app.get('/api/getList', (req, res) => {
   //console.log('Sent list of items');
 });
 
-const corsOptions = {
-  origin: /\.your.domain\.com$/,    // reqexp will match all prefixes
-  methods: "GET,HEAD,POST,PATCH,DELETE,OPTIONS",
-  credentials: true,                // required to pass
-  allowedHeaders: "Content-Type, Authorization, X-Requested-With",
-}
-// intercept pre-flight check for all routes
-app.options('*', cors(corsOptions))
-const isCookieSecure = 
-  process.env.NODE_ENV === "production" ? true : false;
-// add cors middleware to route 
-app.get("/cookie", cors(corsOptions), (req, res) => {
-  const options = {
-    secure: isCookieSecure,
-    httpOnly: isCookieSecure,
-    domain: ".your.domain.com"
-  }
-return res
-    .cookie("cookieName", "cookieValue", options)
-    .status(200)
-    .send("cookie sent")
-})
+
 //access API to listen to a port
 app.listen(port, function () {
   console.log('Server is running on port: ' + port)
