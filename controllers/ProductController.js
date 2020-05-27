@@ -225,30 +225,24 @@ product.get('/printallproduct/:store_id', (req, res, next) => {
 
 
 //1-search by category in default distance sorting
-product.get('/getnearbystore/:category/:customer_id', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:category', (req, res, next) => {
+    console.log(req.params.customer_id)
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     item.findAll({
         where: {
             category: req.params.category,
         }
     })
-        .then(function (rowsUpdated) {
-            //console.log("in then");
-            res.status(200).json(sortByDist(req.session.userId,rowsUpdated))
+        .then( async (rowsUpdated) => {
+            // console.log("in then");
+            result = await sortByDist(req.params.customer_id,rowsUpdated)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //2-search by category using price range filter
-product.get('/:category/:low/:high', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:category/:low/:high', (req, res, next) => {
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     item.findAll({
         where: {
@@ -258,18 +252,15 @@ product.get('/:category/:low/:high', (req, res, next) => {
             }
         }
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(sortByDist(req.session.userId,rowsUpdated))
+        .then( async rowsUpdated => {
+            result = await sortByDist(req.params.customer_id,rowsUpdated)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //3-search by name in ascending price order
-product.get('/:name/price/asc', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:name/price/asc', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -281,18 +272,16 @@ product.get('/:name/price/asc', (req, res, next) => {
         ]
 
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(mask(rowsUpdated,sortByDist(req.session.userId,rowsUpdated)))
+        .then( async (rowsUpdated) => {
+            row1 = await sortByDist(req.params.customer_id,rowsUpdated)
+            result = await mask(rowsUpdated,row1)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //4-search by name using price range filter in ascending price order
-product.get('/:name/price/asc/:low/:high', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:name/price/asc/:low/:high', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -307,18 +296,16 @@ product.get('/:name/price/asc/:low/:high', (req, res, next) => {
         ]
 
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(mask(rowsUpdated,sortByDist(req.session.userId,rowsUpdated)))
+        .then( async (rowsUpdated) => {
+            row1 = await sortByDist(req.params.customer_id,rowsUpdated)
+            result = await mask(rowsUpdated,row1)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //5-search by name in descending price order
-product.get('/:name/price/desc', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:name/price/desc', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -330,18 +317,17 @@ product.get('/:name/price/desc', (req, res, next) => {
         ]
 
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(mask(rowsUpdated,sortByDist(req.session.userId,rowsUpdated)))
+
+        .then( async (rowsUpdated) => {
+            row1 = await sortByDist(req.params.customer_id,rowsUpdated)
+            result = await mask(rowsUpdated,row1)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //6-search by name using price range filter in descending price order
-product.get('/:name/price/desc/:low/:high', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:name/price/desc/:low/:high', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -356,18 +342,17 @@ product.get('/:name/price/desc/:low/:high', (req, res, next) => {
         ]
 
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(mask(rowsUpdated,sortByDist(req.session.userId,rowsUpdated)))
+
+        .then( async (rowsUpdated) => {
+            row1 = await sortByDist(req.params.customer_id,rowsUpdated)
+            result = await mask(rowsUpdated,row1)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //7-search by name in ascending expiration date order
-product.get('/:name/expire/asc', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:name/expire/asc', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -382,18 +367,17 @@ product.get('/:name/expire/asc', (req, res, next) => {
         ]
 
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(mask(rowsUpdated,sortByDist(req.session.userId,rowsUpdated)))
+
+        .then( async (rowsUpdated) => {
+            row1 = await sortByDist(req.params.customer_id,rowsUpdated)
+            result = await mask(rowsUpdated,row1)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //8-search by name using price range filter in ascending expiration date order
-product.get('/:name/expire/asc/:low/:high', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:name/expire/asc/:low/:high', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -408,18 +392,17 @@ product.get('/:name/expire/asc/:low/:high', (req, res, next) => {
         ]
 
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(mask(rowsUpdated,sortByDist(req.session.userId,rowsUpdated)))
+
+        .then( async (rowsUpdated) => {
+            row1 = await sortByDist(req.params.customer_id,rowsUpdated)
+            result = await mask(rowsUpdated,row1)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //9-search by name in descending expiration date order
-product.get('/:name/expire/desc', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:name/expire/desc', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -434,18 +417,17 @@ product.get('/:name/expire/desc', (req, res, next) => {
         ]
 
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(mask(rowsUpdated,sortByDist(req.session.userId,rowsUpdated)))
+
+        .then( async (rowsUpdated) => {
+            row1 = await sortByDist(req.params.customer_id,rowsUpdated)
+            result = await mask(rowsUpdated,row1)
+            res.status(200).json(result)
         })
         .catch(next)
 })
 
 //10-search by name using price range filter in descending expiration date order
-product.get('/:name/expire/desc/:low/:high', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+product.get('/:customer_id/:name/expire/desc/:low/:high', (req, res, next) => {
     item.findAll({
         where: {
             product_name: {
@@ -460,8 +442,10 @@ product.get('/:name/expire/desc/:low/:high', (req, res, next) => {
         ]
 
     })
-        .then(function (rowsUpdated) {
-            res.status(200).json(mask(rowsUpdated,sortByDist(req.session.userId,rowsUpdated)))
+        .then( async (rowsUpdated) => {
+            row1 = await sortByDist(req.params.customer_id,rowsUpdated)
+            result = await mask(rowsUpdated,row1)
+            res.status(200).json(result)
         })
         .catch(next)
 })
