@@ -100,7 +100,6 @@ users.post('/business/register', (req, res) => {
 
 //Business-LOGIN
 users.post('/business/login', (req, res) => {
-  /*TODO - HANDLE CASE WHEN EMAIL IS NULL!*/
   BusinessUser.findOne({
     where: {
       email: req.body.email
@@ -110,7 +109,7 @@ users.post('/business/login', (req, res) => {
       console.log('Found business user');
       if (user) {
         //if the email exists, compare the password from databas
-        console.log('Comparing password');
+        //console.log('Comparing password');
         //first password comes from FE, second password comes from database
         if (bcrypt.compareSync(req.body.password, user.password)) {
           //jwt will generate a token that will be passing to FE
@@ -125,14 +124,14 @@ users.post('/business/login', (req, res) => {
 
           res.status(200).json({userType: req.session.userType, business_id: user.business_id})
         }else{ //Login failed
-          res.status(400).json({error: 'Email or password mismatch'})
+          res.status(400).json({error: 'Incorrect Password'}) //Incorrect password
         }
       } else {
-        res.status(400).json({ error: 'Email or password mismatch' })
+        res.status(400).json({ error: 'Email doesn not exist' }) //Unregistered email
       }
     })
     .catch(err => {
-      res.status(400).json({ error: err })
+      res.status(400).json({ error: 'No email input found' })
     })
   // BusinessUser.findOne({
   //   where: {
@@ -286,14 +285,14 @@ users.post('/customer/login', (req, res) => {
           res.status(200).json({message: req.session.userType})
         }
         else{ //Login failed
-          res.status(400).json({error: 'Email or password mismatch'})
+          res.status(400).json({error: 'Incorret Password'})
         }
       } else {
-        res.status(400).json({ error: 'User does not exist' })
+        res.status(400).json({ error: 'This Email does not exist ' })
       }
     })
     .catch(err => {
-      res.status(400).json({ error: err })
+      res.status(400).json({ error: 'No email input found' })
     })
   // CustomerUser.findOne({
   //   where: {

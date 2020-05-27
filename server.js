@@ -26,7 +26,7 @@ var bodyParser = require('body-parser') //allow us to extract the data sent from
 var app = express()
 var path = require('path')
 var session = require('express-session')
-
+var client = require('redis').createClient(process.env.REDIS_URL);
 const uuid = require('uuid/v4')
 const redis = require('redis')
 const redisStore = require('connect-redis')(session); 
@@ -51,6 +51,7 @@ redisClient.on('error', (err) => {
 });
 
 //App uses the session with the specified information
+//try to connect to heroku using the heroku url insteam of local
 app.use(session({
   genid: (req) =>{
     return uuid()
