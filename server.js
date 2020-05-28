@@ -78,6 +78,12 @@ app.use(
 const db = require("./config/DB.js");
 db.sequelize.sync();
 
+let allowCrossDomain = function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Headers', "*");
+  next();
+}
+app.use(allowCrossDomain);
 // respond with { Hello: 'World' } when a GET request is made to the landing page
 app.get('/', function (req, res) {
   //Initializing 
