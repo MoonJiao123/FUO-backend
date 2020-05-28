@@ -29,7 +29,7 @@ var session = require('express-session')
 var redisClient = require('redis').createClient(process.env.REDIS_URL);
 const uuid = require('uuid/v4')
 const redis = require('redis')
-const redisStore = require('connect-redis')(session); 
+const RedisStore = require('connect-redis')(session); 
 
 const port = process.env.PORT || 5000;
 
