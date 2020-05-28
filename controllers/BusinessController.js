@@ -40,7 +40,7 @@ Store.use(cors())
 
 /* separate functions : printalllocation and numoflocation */
 //01-endpoint for business name to be displayed in the dashboard
-Store.get('/getbusinessname', (req, res, next) => {
+Store.get('/getbusinessname/:business_id', (req, res, next) => {
     if(req.session.userType == null || req.session.userType != "business"){
         res.status(400).json({error:'Session was never created'});
         return;
@@ -49,7 +49,7 @@ Store.get('/getbusinessname', (req, res, next) => {
     business.findOne({
         attributes: ['name'],
         where: {
-            business_id: req.session.userId,
+            business_id: req.params.business_id,
         }
     })
         .then(function (rowsUpdated) {
