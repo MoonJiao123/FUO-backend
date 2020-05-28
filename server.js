@@ -26,7 +26,6 @@ var bodyParser = require('body-parser') //allow us to extract the data sent from
 var app = express()
 var path = require('path')
 var session = require('express-session')
-var redisClient = require('redis').createClient(process.env.REDIS_URL);
 const uuid = require('uuid/v4')
 const redis = require('redis')
 const RedisStore = require('connect-redis')(session); 
@@ -39,7 +38,8 @@ const SESSION_SECRET = 'session_secret';
 const MEMCACHED_SECRET = 'memcached_secret';
 
 //Create the client
-const redisClient = redis.createClient();
+//const redisClient = redis.createClient();
+var redisClient = require('redis').createClient(process.env.REDIS_URL);
 
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
