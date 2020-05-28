@@ -78,12 +78,7 @@ app.use(
 const db = require("./config/DB.js");
 db.sequelize.sync();
 
-let allowCrossDomain = function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Headers', "*");
-  next();
-}
-app.use(allowCrossDomain);
+
 // respond with { Hello: 'World' } when a GET request is made to the landing page
 app.get('/', function (req, res) {
   //Initializing 
@@ -100,11 +95,7 @@ app.get('/', function (req, res) {
 //access both business users and customer users route
 var Users = require('./controllers/AuthController.js')
 
-app.use('/users', Users, function(req,res){
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next;
-})
+app.use('/users', Users)
 
 //access product management route
 var Product = require('./controllers/ProductController.js')
@@ -114,11 +105,7 @@ app.use('/product', Product)
 //access business management route
 var Business = require('./controllers/BusinessController.js')
 
-app.use('/business', Business, function(req,res){
-  res.header('Access-Control-Allow-Origin', req.headers.origin);
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next;
-})
+app.use('/business', Business)
 
 //access product_upload route
 var Cart = require('./controllers/ShoppingCartController.js')
