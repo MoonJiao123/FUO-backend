@@ -39,7 +39,7 @@ const SESSION_SECRET = 'session_secret';
 const MEMCACHED_SECRET = 'memcached_secret';
 
 //Create the client
-//const redisClient = redis.createClient();
+const redisClient = redis.createClient();
 
 //app.use mounts the middleware function at a specific path
 app.use(bodyParser.json())
