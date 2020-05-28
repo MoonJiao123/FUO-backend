@@ -59,12 +59,12 @@ Store.get('/getbusinessname', (req, res, next) => {
 })
 //02-print all locations of a business
 Store.get('/printalllocation', (req, res, next) => {
-    if(req.session.userType != "business"){
-        res.status(401).json({error:'Not equal to business'});
+    if(req.session.userType == null){
+        res.status(500).json({error:'Session Is NULL!'});
         return;
     }
-    if(req.session.userType == null){
-        res.status(400).json({error:'Session Is NULL!'});
+    if(req.session.userType != "business"){
+        res.status(501).json({error:'Not equal to business'});
         return;
     }
 
