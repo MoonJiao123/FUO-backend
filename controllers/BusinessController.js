@@ -86,18 +86,18 @@ Store.get('/printalllocation/:business_id', (req, res, next) => {
 })
 
 //03-print number of locations of a business
-Store.get('/numoflocations', (req, res, next) => {
-     //Verify that we have created a session previously
-     if(req.session.userType == null || req.session.userType != "business"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+Store.get('/numoflocations/:business_id', (req, res, next) => {
+    //  //Verify that we have created a session previously
+    //  if(req.session.userType == null || req.session.userType != "business"){
+    //     res.status(400).json({error:'Session was never created'});
+    //     return;
+    // }
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     store.count({
         distinct: true,
         col: 'store_id',
         where: {
-            business_id: req.session.userId,
+            business_id: req.params.business_id,
         }
     })
         .then(function (count) {
@@ -107,7 +107,7 @@ Store.get('/numoflocations', (req, res, next) => {
 })
 
 //04-location search
-Store.get('/searchlocation/:address', (req, res, next) => {
+Store.get('/searchlocation/:business_id/:address', (req, res, next) => {
     //Verify that we have created a session previously
     if(req.session.userType == null || req.session.userType != "business"){
         res.status(400).json({error:'Session was never created'});
@@ -116,7 +116,7 @@ Store.get('/searchlocation/:address', (req, res, next) => {
 
     store.findAll({
         where: {
-            business_id: req.session.userId,
+            business_id: req.params.business_id,
             address: {
                 [Op.like]: '%' + req.params.address + '%'
             }
@@ -130,16 +130,16 @@ Store.get('/searchlocation/:address', (req, res, next) => {
 })
 
 //05-select location 
-Store.get('/selectlocation/:address', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "business"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
+    // if(req.session.userType == null || req.session.userType != "business"){
+    //     res.status(400).json({error:'Session was never created'});
+    //     return;
+    // }
      //Verify that we have created a session previously
     //Op = Sequelize.Op;
     store.findAll({
         where: {
-            business_id: req.session.userId,
+            business_id: req.params.business_id,
             address: req.params.address
         }
     })
@@ -151,7 +151,7 @@ Store.get('/selectlocation/:address', (req, res, next) => {
 
 
 //06-add location with latitude and longitude
-Store.post('/addlocation/:address/:name', (req, res, next) => {
+Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
     if(req.session.userType == null || req.session.userType != "business"){
         res.status(400).json({error:'Session was never created'});
         return;
@@ -171,7 +171,7 @@ Store.post('/addlocation/:address/:name', (req, res, next) => {
     //     });
     const userData = {
         address: req.params.address,
-        business_id: req.session.userId,
+        business_id: req.params.business_id,
         store_name: req.params.name
     }
     // console.log(storelat);
@@ -226,7 +226,7 @@ Store.post('/addlocation/:address/:name', (req, res, next) => {
 })
 
 //07-delete location
-Store.delete('/deletelocation/:store_id', (req, res, next) => {
+Store.delete('/deletelocation/:business_id/:store_id', (req, res, next) => {
     if(req.session.userType == null || req.session.userType != "business"){
         res.status(400).json({error:'Session was never created'});
         return;
@@ -234,7 +234,7 @@ Store.delete('/deletelocation/:store_id', (req, res, next) => {
     //The destroy method is use to delete selectec instance
     store.destroy({
         where: {
-            business_id: req.session.userId,
+            business_id: req.params.business_id,
             store_id: req.params.store_id
         }
     })
