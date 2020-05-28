@@ -59,15 +59,15 @@ Store.get('/getbusinessname', (req, res, next) => {
 })
 //02-print all locations of a business
 Store.get('/printalllocation', (req, res, next) => {
+    if(req.session.userType != "business"){
+        res.status(401).json({error:'Not equal to business'});
+        return;
+    }
     if(req.session.userType == null){
         res.status(400).json({error:'Session Is NULL!'});
         return;
     }
 
-    if(req.session.userId != "business"){
-        res.status(401).json({error:'Not equal to business'});
-        return;
-    }
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     store.findAll({
         attributes: ['store_name', 'address', 'store_id'],
