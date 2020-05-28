@@ -57,6 +57,9 @@ app.use(session({
   genid: (req) =>{
     return uuid()
   },
+  store: new RedisStore({
+    url: process.env.REDIS_URL
+  }),
   secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -65,7 +68,7 @@ app.use(session({
 
 
 //parse the data with json, the query string library
-app.use(
+app.use( 
   bodyParser.urlencoded({
     extended: false
   })
