@@ -59,6 +59,8 @@ Store.get('/getbusinessname', (req, res, next) => {
 })
 //02-print all locations of a business
 Store.get('/printalllocation', (req, res, next) => {
+    console.log('printalllocation() - userType: ' + req.session.userType); 
+    console.log('printalllocation() - userId: ' + req.session.userId); 
     if(req.session.userType == null){
         res.status(400).json({error:'Session Is NULL!'});
         return;
