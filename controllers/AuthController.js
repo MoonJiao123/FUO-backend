@@ -116,11 +116,19 @@ users.post('/business/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440 //lifetime of token
           })
+
+          console.log('login() - sessionID: ' + req.sessionID); 
+          console.log('login() - userType: ' + req.session.userType); 
+          console.log('login() - userId: ' + req.session.userId); 
           
           //Login to the business users
           req.session.userType = "business";
           req.session.userId = user.business_id;
           req.session.save(); 
+
+          console.log('login() - sessionID: ' + req.sessionID);
+          console.log('login() - AFTER SAVING userType: ' + req.session.userType); 
+          console.log('login() - AFTER SAVING userId: ' + req.session.userId); 
 
           res.status(200).json({userType: req.session.userType, business_id: user.business_id})
         }else{ //Login failed
