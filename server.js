@@ -38,7 +38,7 @@ const SESSION_SECRET = 'session_secret';
 const MEMCACHED_SECRET = 'memcached_secret';
 
 //Create the client
-//const redisClient = redis.createClient();
+//const redisClient  = redis.createClient();
 var redisClient = require('redis').createClient(process.env.REDIS_URL);
 
 //app.use mounts the middleware function at a specific path
@@ -58,7 +58,8 @@ app.use(session({
     return uuid()
   },
   store: new RedisStore({
-    url: process.env.REDIS_URL
+    url: process.env.REDIS_URL,
+    client: redisClient
   }),
   secret: SESSION_SECRET,
   resave: false,
