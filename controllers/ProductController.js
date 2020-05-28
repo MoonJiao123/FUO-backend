@@ -192,7 +192,7 @@ product.delete('/delete/:store_id/:product_id', (req, res, next) => {
         .catch(next)
 })
 
-//product delete all
+//product delete for all items
 product.delete('/deleteallproduct/:store_id', (req, res, next) => {
     //The destroy method is use to delete selected instance
     item.destroy({

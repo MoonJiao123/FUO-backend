@@ -146,24 +146,28 @@ users.post('/me/from/token', (req, res) => {
    return res.status(401).json({message: 'Must pass token'});
   }
 // Check token that was passed by decoding token using secret
- jwt.verify(token, process.env.JWT_SECRET, function(err, user) {
+ jwt.verify(token, process.env.SECRET_KEY, function(err, user) {
+   console.log(user)
+
     if (err) throw err;
    //return user using the id from w/in JWTToken
    BusinessUser.findOne({
     where: {
-      business_id: user._id
+      business_id: user.business_id
     }
-  }, function(err, user) {
+  }).then(user => {
+     console.log("entering function");
        if (err) throw err;
-          user = utils.getCleanUser(user); 
+          //user = utils.getCleanUser(user); 
          //Note: you can renew token by creating new token(i.e.    
          //refresh it)w/ new expiration time at this point, but I’m 
          //passing the old token back.
          // var token = utils.generateToken(user);
-        res.json({
+        res.status(200).json({
             user: user,
             token: token
         });
+
      });
   });
 });
