@@ -109,10 +109,10 @@ Store.get('/numoflocations/:business_id', (req, res, next) => {
 //04-location search
 Store.get('/searchlocation/:business_id/:address', (req, res, next) => {
     //Verify that we have created a session previously
-    if(req.session.userType == null || req.session.userType != "business"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+    // if(req.session.userType == null || req.session.userType != "business"){
+    //     res.status(400).json({error:'Session was never created'});
+    //     return;
+    // }
 
     store.findAll({
         where: {
@@ -152,10 +152,10 @@ Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
 
 //06-add location with latitude and longitude
 Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "business"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+    // if(req.session.userType == null || req.session.userType != "business"){
+    //     res.status(400).json({error:'Session was never created'});
+    //     return;
+    // }
     // var storelat;
     // var storelong;
     var reqaddress = req.params.address
@@ -227,10 +227,10 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
 
 //07-delete location
 Store.delete('/deletelocation/:business_id/:store_id', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "business"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+    // if(req.session.userType == null || req.session.userType != "business"){
+    //     res.status(400).json({error:'Session was never created'});
+    //     return;
+    // }
     //The destroy method is use to delete selectec instance
     store.destroy({
         where: {

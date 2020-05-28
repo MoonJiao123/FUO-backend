@@ -54,10 +54,10 @@ Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:cust
 //add item to cart
 Cart.post('/add/:customer_id/:product_id', (req, res) => {
     //Verify that we have created a session previously
-    if(req.session.userType ==  null || req.session.userType != "customer"){
-        res.status(400).json({error:'Please create sessions'});
-        return;
-    }
+    // if(req.session.userType ==  null || req.session.userType != "customer"){
+    //     res.status(400).json({error:'Please create sessions'});
+    //     return;
+    // }
     const userData = {
         //might delete amount and tootal price
         //amount: req.body.amount,
@@ -94,10 +94,10 @@ Cart.post('/add/:customer_id/:product_id', (req, res) => {
 //delete item from cart
 Cart.delete('/delete/:customer_id/:product_id', (req, res, next) => {
     //Verify that we have created a session previously
-    if(req.session.userType ==  null || req.session.userType != "customer"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+    // if(req.session.userType ==  null || req.session.userType != "customer"){
+    //     res.status(400).json({error:'Session was never created'});
+    //     return;
+    // }
     //The destroy method is use to delete selectec instance
     list.destroy({
         where: {

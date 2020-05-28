@@ -40,44 +40,15 @@ const item = require('../models/ProductModel.js')
 const { Op } = require("sequelize");
 
 product.use(cors())
-// //product upload
-// product.post('/test/:store_id', (req, res) => {
-//     const userData = {
-//         product_name: req.body.product_name,
-//         product_img: req.body.product_img,
-//         category: req.body.category,
-//         price: req.body.price,
-//         expire_date: req.body.expire_date,
-//         stock_amount: req.body.stock_amount,
-//         coupon: req.body.coupon,
-//         store_id: req.params.store_id
-//     }
-
-//     //The create method uilds a new model instance and calls save on it.
-//     //it generate its own token after it created the user
-//     item.bulkCreate(userData, 
-//         {
-//             updateOnDuplicate: ["product_id","product_name", "product_img", "category","price","expire_date", "stock_amount", "coupon"]
-//         } )
-//         .then(user => {
-//             res.status(200).json({ status: user.product_name + 'Added coupon to db' })
-//         })
-//         .catch(err => {
-//             //res.send('error: ' + err)
-//             res.status(400).json({ error: err }) //Shawn
-//         })
-// })
 
 //product upsert
 product.post('/upsert/:store_id/:product_id', (req, res, next) => {
-    
-    console.log("product_id "+req.params.product_id);
-    console.log("store_id "+req.params.store_id);
-    console.log("product_name"+req.body.product_name);
+    console.log("img ");
+    console.log("img "+req.body.product_image);
     //The update method updates multiple instances that match the where options.
     const userData = {
         product_name: req.body.product_name,
-        product_img: req.body.product_img,
+        product_image: req.body.product_image,
         category: req.body.category,
         price: req.body.price,
         expire_date: req.body.expire_date,
