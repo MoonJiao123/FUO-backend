@@ -125,7 +125,7 @@ users.post('/business/login', (req, res) => {
           req.session.userId = user.business_id;
           req.session.save(); 
 
-          res.status(200).json({token: token})
+          res.status(200).json({token: token, user_id: user.business_id})
         }else{ //Login failed
           res.status(400).json({error: 'Incorrect Password'}) //Incorrect password
         }
