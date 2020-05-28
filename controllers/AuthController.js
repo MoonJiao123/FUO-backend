@@ -139,7 +139,7 @@ users.post('/business/login', (req, res) => {
   
 })
 //get current user from token
-users.get('/me/from/token', function(req, res, next) {
+users.post('/me/from/token', function(req, res, next) {
   // check header or url parameters or post parameters for token
   var token = req.body.token || req.query.token;
   if (!token) {
