@@ -108,7 +108,11 @@ app.use('/product', Product)
 //access business management route
 var Business = require('./controllers/BusinessController.js')
 
-app.use('/business', Business)
+app.use('/business', Business, function(req,res){
+  res.header('Access-Control-Allow-Origin', req.headers.origin);
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next;
+})
 
 //access product_upload route
 var Cart = require('./controllers/ShoppingCartController.js')
