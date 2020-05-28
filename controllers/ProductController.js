@@ -236,6 +236,7 @@ product.get('/:customer_id/:category', (req, res, next) => {
         .then( async (rowsUpdated) => {
             // console.log("in then");
             result = await sortByDist(req.params.customer_id,rowsUpdated)
+            // console.log(result)
             res.status(200).json(result)
         })
         .catch(next)
@@ -452,25 +453,29 @@ product.get('/:customer_id/:name/expire/desc/:low/:high', (req, res, next) => {
 
 //*********************** functions for distance sorting start from here ****************************************//
 
-async function mask(items1,items2) {
-    // mask items1 by items2
-    pids = items2.map( item => { return item.getDataValue('product_id')})
-    pids = await Promise.all(pids)
+// mask items1 by items2
+//To extract the products from items1 that are existing in items2 in sorted order
+async function mask(items1, items2) {
+    //to return the product_id of the items in items2 in order
+    productIds = items2.map(item => { return item.getDataValue('product_id')})
+    productIds = await Promise.all(productIds)
+
     newItems = []
-    for (item of items1) {
-        myid = await item.getDataValue('product_id')
-        if (!(myid in pids)) {
+
+    for (anItem of items1) {
+        ithId = await anItem.getDataValue('product_id')
+        if (!(ithId in productIds)) {
             continue;
         }
-        newItems.push(item)
+        newItems.push(anItem)
     }
     return newItems
 }
 
+//convert customer address to coordinate
 async function sortByDist(customerID,items,numKeep=20) {
-
+//////////////////add
     LL = await getLL(customerID,items)
-
     //console.log("LL "+LL)
 
     dist = coord2dist(LL)
@@ -486,6 +491,7 @@ async function sortByDist(customerID,items,numKeep=20) {
     nitems = items.length
     newItems = []
     for (var i=0; i< Math.min(nitems,numKeep); i++) {
+        await items[perm[i]].setDataValue('distance', dist[i])
         newItems.push(items[perm[i]])
     }
     return newItems
