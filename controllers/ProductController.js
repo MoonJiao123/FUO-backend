@@ -43,12 +43,12 @@ product.use(cors())
 
 //product upsert
 product.post('/upsert/:store_id/:product_id', (req, res, next) => {
-    console.log("img ");
-    console.log("img "+req.body.product_image);
+    console.error("img ");
+    console.error("img "+req.body.product_img);//does not wokr
     //The update method updates multiple instances that match the where options.
     const userData = {
         product_name: req.body.product_name,
-        product_image: req.body.product_image,
+        product_img: req.body.product_img,
         category: req.body.category,
         price: req.body.price,
         expire_date: req.body.expire_date,
@@ -69,6 +69,7 @@ product.post('/upsert/:store_id/:product_id', (req, res, next) => {
                
                 item.create(userData)
                     .then(user => {
+                        console.error("img "+req.body.product_img);
                         res.status(200).json({ message: req.body }) 
                     })
                     .catch(err => {
@@ -76,19 +77,19 @@ product.post('/upsert/:store_id/:product_id', (req, res, next) => {
                         res.status(400).json({ Error: 'Bad request!' }) /* Added by Shawn */
                     })
             } else {
-                console.log("product already existed");
+                console.error("product already existed");
                 item.update(userData,{//The where option is used to filter the query.
                     where: {
                         product_id: req.params.product_id
                     }})
                     .then(function (rowsUpdated) {
-                        console.log("in update function");
+                        console.error("img in else "+req.body.product_img);
                         res.status(200).json(rowsUpdated)
                     })
             }
         })
         .catch(err => {
-            console.log("some error");
+            console.error("some error");
             //res.send('error: ' + err)
             res.status(400).json({ Error: err }) /* Added by Shawn */
         })

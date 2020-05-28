@@ -32,7 +32,10 @@ var Product = db.sequelize.define(
     product_name: {
       type: Sequelize.STRING
     },
-    product_image: {
+    // product_image: {
+    //   type: Sequelize.STRING
+    // },
+    product_img: {
       type: Sequelize.STRING
     },
     category: {
