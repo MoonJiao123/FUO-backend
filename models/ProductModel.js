@@ -53,9 +53,9 @@ var Product = db.sequelize.define(
     coupon: {
       type: Sequelize.STRING
     },
-    // distance: {
-    //   type: Sequelize.DOUBLE
-    // },
+    distance: {
+       type: Sequelize.VIRTUAL
+    }
 
   },
   {
