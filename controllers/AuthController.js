@@ -221,9 +221,12 @@ const userData = {
 
     //check validation of address
     customerAddress = req.body.customer_location
-    await geoCoder.geocode(customerAddress).then(valication => {
-        if(valication == null)
+    await geoCoder.geocode(customerAddress).then(validation => {
+        if(validation == null)
             res.status(400).json({message: "invalid address"})
+    }).catch(err => {
+        //res.send('error: ' + err)
+        res.status(400).json({message: 'err'})
     })
 
 
