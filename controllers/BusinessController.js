@@ -41,10 +41,10 @@ Store.use(cors())
 /* separate functions : printalllocation and numoflocation */
 //01-endpoint for business name to be displayed in the dashboard
 Store.get('/getbusinessname/:business_id', (req, res, next) => {
-    if(req.session.userType == null || req.session.userType != "business"){
-        res.status(400).json({error:'Session was never created'});
-        return;
-    }
+    // if(req.session.userType == null || req.session.userType != "business"){
+    //     res.status(400).json({error:'Session was never created'});
+    //     return;
+    // }
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     business.findOne({
         attributes: ['name'],
