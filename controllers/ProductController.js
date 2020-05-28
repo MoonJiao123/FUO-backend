@@ -78,10 +78,9 @@ product.post('/upsert/:store_id/:product_id', (req, res, next) => {
                     })
             } else {
                 console.error("product already existed");
-                item.update(userData,{//The where option is used to filter the query.
-                    where: {
-                        product_id: req.params.product_id
-                    }})
+                item.update(userData, {//The where option is used to filter the query.
+                    where: { product_id: req.params.product_id}
+                })
                     .then(function (rowsUpdated) {
                         console.error("img in else "+req.body.product_img);
                         res.status(200).json(rowsUpdated)
@@ -107,7 +106,6 @@ product.post('/upload/:store_id', (req, res) => {
         coupon: req.body.coupon,
         store_id: req.params.store_id
     }
-
     //The create method uilds a new model instance and calls save on it.
     //it generate its own token after it created the user
     item.create(userData)

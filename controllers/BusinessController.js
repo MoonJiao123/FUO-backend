@@ -151,37 +151,24 @@ Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
 
 
 //06-add location with latitude and longitude
-Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
-    // if(req.session.userType == null || req.session.userType != "business"){
-    //     res.status(400).json({error:'Session was never created'});
-    //     return;
-    // }
-    // var storelat;
-    // var storelong;
-    var reqaddress = req.params.address
-    // //convert address to lat and long
-    // geoCoder.geocode(reqaddress)
-    //     .then((res) => {
-    //         console.log(res);
-    //         storelat = res[res.length - 1].latitude;
-    //         storelong = res[res.length - 1].longitude
-    //     })
-    //     .catch((err) => {
-    //         console.log(err);
-    //     });
+Store.post('/addlocation/:business_id', (req, res, next) => {
+   console.error(req.body);
+    var reqaddress = req.body.address
+    console.error(reqaddress);
+
     const userData = {
-        address: req.params.address,
+        address: req.body.address,
         business_id: req.params.business_id,
-        store_name: req.params.name
+        store_name: req.body.name
     }
-    // console.log(storelat);
-    // console.log(storelong);
+    console.error(userData);
+
     //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
     store.findOne({
         //The where option is used to filter the query.
         where: {
-            business_id: req.session.userId,
-            address: req.params.address,
+            business_id: req.params.business_id,
+            address: req.body.address,
         }
     })
         //it generate its own token after it created the user
@@ -192,13 +179,13 @@ Store.post('/addlocation/:business_id/:address/:name', (req, res, next) => {
                 store.create(userData)
                 geoCoder.geocode(reqaddress)
                     .then((res) => {
-                        console.log(res);
+                        console.error(res);
                         store.update(
                             { store_lat: res[res.length - 1].latitude, store_long: res[res.length - 1].longitude },
                             {
                                 where: {
-                                    business_id: req.session.userId,
-                                    address: req.params.address,
+                                    business_id: req.params.business_id,
+                                    address: req.body.address,
                                 }
                             }
                         ).then(result =>

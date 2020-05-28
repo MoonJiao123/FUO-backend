@@ -121,9 +121,9 @@ users.post('/business/login', (req, res) => {
           // console.log('login() - userId: ' + req.session.userId); 
           
           //Login to the business users
-          req.session.userType = "business";
-          req.session.userId = user.business_id;
-          req.session.save(); 
+          // req.session.userType = "business";
+          // req.session.userId = user.business_id;
+          // req.session.save(); 
 
           res.status(200).json({token: token, user_id: user.business_id})
         }else{ //Login failed
@@ -283,14 +283,8 @@ users.post('/customer/login', (req, res) => {
             expiresIn: 1440 //lifetime of token
           })
 
-              
-          //Login to the business users
-          req.session.userType = "customer";
-          req.session.userId = user.customer_id;
-          req.session.save(); 
 
-
-          res.status(200).json({message: req.session.userType})
+          res.status(200).json({token: token})
         }
         else{ //Login failed
           res.status(400).json({error: 'Incorret Password'})
@@ -302,109 +296,8 @@ users.post('/customer/login', (req, res) => {
     .catch(err => {
       res.status(400).json({ error: 'No email input found' })
     })
-  // CustomerUser.findOne({
-  //   where: {
-  //     email: req.body.email
-  //   }
-  // })
-  //   .then(user => {
-  //     if (user) {
-  //       //if the email exists, compare the password from database
-  //       //first password comes from FE, second password comes from database
-  //       if (bcrypt.compareSync(req.body.password, user.password)) {
-  //         //jwt will generate a token that will be passing to FE
-  //         let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
-  //           expiresIn: 1440 //lifetime of token
-  //         })
-  //         /*req.session.cookie = JSON.stringify({userType:"customer", user_id: user.customer_id})
-  //         req.session.save(function(err){*/
-
-  //         //req.session.userType = "customer"; 
-  //         //req.session.userId = user.customer_id;
-
-  //         res.status(200).send(token) // status: 400, response: undefined
-  //         //res.status(200).json({ message: 'User found, authenticated line 231' })
-
-  //       }
-  //     } else {
-  //       res.status(400).json({ error: 'User does not exist' })
-  //       //doesn't work :( only status 400, response doesn't work
-  //     }
-  //   })
-  //   .catch(err => {
-  //     //res.status(400).json({ error: err })
-  //     res.status(400).json({ error: 'Hi, this is error' })
-  //   })
+  
 })
 
 
-/* Description: 
- * POST endpoint to which the user can generate the API secret
- * Client will have its ClientID and ClientSecret stored in the database, these will be 
- * used with the OAuth2.0 server as a request token to get an access token which will expire after not 
- * being used for a certain amount of time. 
- * 
- * We will use the client ID as the request token, the api_key field in the model will be the secret 
- *  Link to tutorial: https://www.sohamkamani.com/blog/javascript/2018-06-24-oauth-with-node-js/
- * 
- * Request format: 
- *   - session: the session from which the api key generation is being routed (generated from the front end)
- *              we will use the session to infer which business user the api key is being generated for 
- *              - email 
- *              - business id 
- * 
- * Parameters: 
- *    req: the request received via the POST request
- *    res: the response the server will send back 
- * Return Values: 
- *    201 (Created) - "Successfully generated API secret" - Indicates successful generation and storage into DB of api secret
- *    401 (Unauthorized) - "Invalid business user session" - Indicates that api key generation was unsuccessful due to the user
- *                                                           requesting from an invalid session (not logged in)
- *    404 (Not Found) -  "Invalid request parameter" - Database wasn't able to find the corresponding business user 
- */
-/*businessUsers.post('/business/api/generate_api_key', (req, res) => {
-  /* Should have the email stored in the session for now*/
-/*  var session = req.session 
-
-  BUser.findOne({
-    where: {
-      email: session.email
-    }
-  })
-    .then(user => {
-      BAPI.generateApiKey(req,res)
-    })
-    .catch(err => {
-      //res.send('error: ' + err)
-      res.status(400).json({error: err}) //Shawn
-    })
-})
-
-
-//PROFILE
-//to fetch profile from FE.
-users.get('/customer', (req, res) => {
-  //to verify authorization sent from FE with secret key
-  //it converts token back to the object we created
-  var decoded = jwt.verify(req.headers['authorization'], process.env.SECRET_KEY)
-
-  CustomerUser.findOne({
-    where: {
-      id: decoded.id
-    }
-  })
-    .then(user => {
-      if (user) {
-        res.json(user)
-        res.status(200).json({ message: 'User found' }); /* added by Shawn */
- /*     } else {
-        //res.send('User does not exist')
-        res.status(400).json({ error: 'User does not exist' }); /* added by Shawn */
- /*     }
-    })
-    .catch(err => {
-      //res.send('error: ' + err)
-      res.status(400).json({ error: err }); /* added by Shawn */
-/*    })
-})*/
 module.exports = users
