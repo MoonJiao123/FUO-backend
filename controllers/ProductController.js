@@ -560,7 +560,7 @@ function coord2dist(LL) {
 }
 
 //function6 - To sort the 20 closest products to customer user ------------DONE
-async function sortByDist(customerID, items, numKeep=5) {
+async function sortByDist(customerID, items, numKeep=20) {
 
     await updateCustomerCoord(customerID);
 
