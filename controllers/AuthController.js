@@ -109,7 +109,6 @@ users.post('/business/login', (req, res) => {
       console.log('Found business user');
       if (user) {
         //if the email exists, compare the password from databas
-        //console.log('Comparing password');
         //first password comes from FE, second password comes from database
         if (bcrypt.compareSync(req.body.password, user.password)) {
           //jwt will generate a token that will be passing to FE
@@ -117,20 +116,16 @@ users.post('/business/login', (req, res) => {
             expiresIn: 1440 //lifetime of token
           })
 
-          console.log('login() - sessionID: ' + req.sessionID); 
-          console.log('login() - userType: ' + req.session.userType); 
-          console.log('login() - userId: ' + req.session.userId); 
+          // console.log('login() - sessionID: ' + req.sessionID); 
+          // console.log('login() - userType: ' + req.session.userType); 
+          // console.log('login() - userId: ' + req.session.userId); 
           
           //Login to the business users
           req.session.userType = "business";
           req.session.userId = user.business_id;
           req.session.save(); 
 
-          console.log('login() - sessionID: ' + req.sessionID);
-          console.log('login() - AFTER SAVING userType: ' + req.session.userType); 
-          console.log('login() - AFTER SAVING userId: ' + req.session.userId); 
-
-          res.status(200).json({userType: req.session.userType, business_id: user.business_id})
+          res.status(200).json({token: token})
         }else{ //Login failed
           res.status(400).json({error: 'Incorrect Password'}) //Incorrect password
         }
@@ -141,36 +136,37 @@ users.post('/business/login', (req, res) => {
     .catch(err => {
       res.status(400).json({ error: 'No email input found' })
     })
-  // BusinessUser.findOne({
-  //   where: {
-  //     email: req.body.email
-  //   }
-  // })
-  //   .then(user => {
-  //     if (user) {
-  //       //if the email exists, compare the password from database
-  //       //first password comes from FE, second password comes from database
-  //       if (bcrypt.compareSync(req.body.password, user.password)) {
-  //         //jwt will generate a token that will be passing to FE
-  //         let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
-  //           expiresIn: 1440 //lifetime of token
-  //         })
-
-  //         //req.session.userType = "business";
-  //         //req.session.userId = user.business_id;
-
-  //         res.status(200).send(token)
-  //         //res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
-  //       }
-  //     } else {
-  //       res.status(400).json({ error: 'User does not exist' }) //works correctly
-  //     }
-  //   })
-  //   .catch(err => {
-  //     res.status(400).json({ error: err })
-  //   })
+  
 })
-
+//get current user from token
+users.get('/me/from/token', function(req, res, next) {
+  // check header or url parameters or post parameters for token
+  var token = req.body.token || req.query.token;
+  if (!token) {
+   return res.status(401).json({message: 'Must pass token'});
+  }
+// Check token that was passed by decoding token using secret
+ jwt.verify(token, process.env.JWT_SECRET, function(err, user) {
+    if (err) throw err;
+   //return user using the id from w/in JWTToken
+   BusinessUser.findOne({
+    where: {
+      business_id: user._id
+    }
+  }, function(err, user) {
+       if (err) throw err;
+          user = utils.getCleanUser(user); 
+         //Note: you can renew token by creating new token(i.e.    
+         //refresh it)w/ new expiration time at this point, but I’m 
+         //passing the old token back.
+         // var token = utils.generateToken(user);
+        res.json({
+            user: user,
+            token: token
+        });
+     });
+  });
+});
 //PROFILE
 //to fetch profile from FE.
 users.get('/business', (req, res) => {
