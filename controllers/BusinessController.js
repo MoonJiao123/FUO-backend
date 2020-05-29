@@ -151,10 +151,7 @@ Store.get('/selectlocation/:business_id/:address', (req, res, next) => {
 
 
 //06-add location with latitude and longitude
-Store.post('/addlocation/:business_id', (req, res, next) => {
-   console.error(req.body);
-    var reqaddress = req.body.address
-    console.error(reqaddress);
+Store.post('/addlocation/:business_id', async (req, res, next) => {
 
     const userData = {
         address: req.body.address,
@@ -163,53 +160,60 @@ Store.post('/addlocation/:business_id', (req, res, next) => {
     }
     console.error(userData);
 
-    //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
-    store.findOne({
-        //The where option is used to filter the query.
-        where: {
-            business_id: req.params.business_id,
-            address: req.body.address,
-        }
-    })
-        //it generate its own token after it created the user
-        .then(user => {
-            if (!user) {
-                //The create method uilds a new model instance and calls save on it.
-                //it generate its own token after it created the user
-                store.create(userData)
-                geoCoder.geocode(reqaddress)
-                    .then((res) => {
-                        console.error(res);
-                        store.update(
-                            { store_lat: res[res.length - 1].latitude, store_long: res[res.length - 1].longitude },
-                            {
-                                where: {
-                                    business_id: req.params.business_id,
-                                    address: req.body.address,
+    var reqaddress = await req.body.address
+    validation = await geoCoder.geocode(reqaddress)
+
+    if (validation.length < 1 || validation == undefined) {
+        res.status(400).json({message: "invalid address"})
+    } else {
+
+        //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
+        store.findOne({
+            //The where option is used to filter the query.
+            where: {
+                business_id: req.params.business_id,
+                address: req.body.address,
+            }
+        })
+            //it generate its own token after it created the user
+            .then(user => {
+                if (!user) {
+                    //The create method uilds a new model instance and calls save on it.
+                    //it generate its own token after it created the user
+                    store.create(userData)
+                    geoCoder.geocode(reqaddress)
+                        .then((res) => {
+                            console.error(res);
+                            store.update(
+                                {store_lat: res[res.length - 1].latitude, store_long: res[res.length - 1].longitude},
+                                {
+                                    where: {
+                                        business_id: req.params.business_id,
+                                        address: req.body.address,
+                                    }
                                 }
-                            }
-                        ).then(result =>
-                            console.log("converted address to long and lat")
-                        )
-                            .error(err =>
-                                handleError(err)
+                            ).then(result =>
+                                console.log("converted address to long and lat")
                             )
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
+                                .error(err =>
+                                    handleError(err)
+                                )
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
 
-                res.status(200).json({ status: 'Added item to business' })
+                    res.status(200).json({status: 'Added item to business'})
 
-            }
-            else {
-                res.status(400).json({ status: 'item already exists' })
-            }
-        })
-        .catch(err => {
-            //res.send('error: ' + err)
-            res.status(400).json({ error: err }) //Shawn
-        })
+                } else {
+                    res.status(400).json({status: 'item already exists'})
+                }
+            })
+            .catch(err => {
+                //res.send('error: ' + err)
+                res.status(400).json({error: err}) //Shawn
+            })
+    }
 })
 
 //07-delete location
