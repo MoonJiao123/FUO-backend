@@ -51,7 +51,10 @@ var Product = db.sequelize.define(
       type: Sequelize.INTEGER
     },
     coupon: {
-      type: Sequelize.STRING
+      type: Sequelize.INTEGER
+    },
+    day_to_expire: {
+      type: Sequelize.INTEGER
     },
     distance: {
        type: Sequelize.VIRTUAL
