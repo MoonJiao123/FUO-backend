@@ -216,51 +216,58 @@ const userData = {
     account: req.body.account,
     password: bcrypt.hashSync(req.body.password, 8),
     email: req.body.email,
-    customer_location: req.body.customer_location
+    address: req.body.address
 }
 
     //check validation of address
-    customerAddress = req.body.customer_location
-    await geoCoder.geocode(customerAddress).then(validation => {
-        if(validation == null)
-            res.status(400).json({message: "invalid address"})
-    }).catch(err => {
-        //res.send('error: ' + err)
-        res.status(400).json({message: 'err'})
-    })
-
-
-//since we only use email and password for login, so we only compare email here
-CustomerUser.findOne({
-    where: {
-        email: req.body.email
+    customerAddress = await req.body.address
+    validation = await geoCoder.geocode(customerAddress)
+        // console.log("Inside address validation")
+    console.log("customerAddress "+customerAddress)
+    console.log("validation "+validation)
+        // console.log("validation==null "+(validation==null))
+        // console.log("validation===null "+(validation===null))
+        // console.log("validation==empty "+(validation==""))
+        // console.log("validation===empty "+(validation===""))
+        // console.log("isEmpty(validation) "+isEmpty(validation))
+    if(validation == "") {
+        res.status(400).json({message: "invalid address"})
     }
-})
-    .then(user => {
-        if (!user) {
-            //if the user does not exist, there is no user with the same email, we will create the user here
-            bcrypt.hash(req.body.password, 10, (err, hash) => {
-                userData.password = hash
-                //it generate its own token after it created the user
-                CustomerUser.create(userData)
-                    .then(user => {
-                        //res.json({ status: user.email + 'Registered!' })
-                        res.status(200).json({message: req.body}) /* added by Shawn*/
+
+    if(validation != "") {
+
+        //since we only use email and password for login, so we only compare email here
+        CustomerUser.findOne({
+            where: {
+                email: req.body.email
+            }
+        })
+            .then(user => {
+                if (!user) {
+                    //if the user does not exist, there is no user with the same email, we will create the user here
+                    bcrypt.hash(req.body.password, 10, (err, hash) => {
+                        userData.password = hash
+                        //it generate its own token after it created the user
+                        CustomerUser.create(userData)
+                            .then(user => {
+                                //res.json({ status: user.email + 'Registered!' })
+                                res.status(200).json({message: req.body}) /* added by Shawn*/
+                            })
+                            .catch(err => {
+                                res.send('error: ' + err)
+                                res.status(400).json({error: err}) /* added by Shawn*/
+                            })
                     })
-                    .catch(err => {
-                        res.send('error: ' + err)
-                        res.status(400).json({error: err}) /* added by Shawn*/
-                    })
+                } else {
+                    //res.json({ error: 'User already exists' })
+                    res.status(400).json({error: 'User already exists'}) /* added by Shawn*/
+                }
             })
-        } else {
-            //res.json({ error: 'User already exists' })
-            res.status(400).json({error: 'User already exists'}) /* added by Shawn*/
-        }
-    })
-    .catch(err => {
-        //res.send('error: ' + err)
-        res.status(400).json({message: req.body}) /* added by Shawn*/
-    })
+            .catch(err => {
+                //res.send('error: ' + err)
+                res.status(400).json({message: req.body}) /* added by Shawn*/
+            })
+    }
 })
 
 //LOGOUT - KILL THE SESSION AND WIPE TEH COOKIE
