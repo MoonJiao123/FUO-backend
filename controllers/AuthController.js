@@ -218,24 +218,20 @@ const userData = {
     email: req.body.email,
     address: req.body.address
 }
-
     //check validation of address
     customerAddress = await req.body.address
     validation = await geoCoder.geocode(customerAddress)
-        // console.log("Inside address validation")
-    console.log("customerAddress "+customerAddress)
-    console.log("validation "+validation)
-        // console.log("validation==null "+(validation==null))
-        // console.log("validation===null "+(validation===null))
-        // console.log("validation==empty "+(validation==""))
-        // console.log("validation===empty "+(validation===""))
-        // console.log("isEmpty(validation) "+isEmpty(validation))
-    if(validation == "") {
+    // console.log("Inside address validation")
+    // console.log("customerAddress "+customerAddress)
+    // console.log("validation "+validation)
+    // console.log("validation==null "+(validation==null))
+    // console.log("validation===null "+(validation===null))
+    // console.log("validation==empty "+(validation==""))
+    // console.log("validation===empty "+(validation===""))
+    // console.log("isEmpty(validation) "+isEmpty(validation))
+    if (validation.length < 1 || validation == undefined) {
         res.status(400).json({message: "invalid address"})
-    }
-
-    if(validation != "") {
-
+    } else {
         //since we only use email and password for login, so we only compare email here
         CustomerUser.findOne({
             where: {
