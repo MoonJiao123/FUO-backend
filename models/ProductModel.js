@@ -31,10 +31,7 @@ var Product = db.sequelize.define(
     },
     product_name: {
       type: Sequelize.STRING
-    },
-    // product_image: {
-    //   type: Sequelize.STRING
-    // },
+    }, 
     product_img: {
       type: Sequelize.STRING
     },
@@ -42,6 +39,9 @@ var Product = db.sequelize.define(
       type: Sequelize.STRING
     },
     price: {
+      type: Sequelize.DOUBLE
+    },
+    discounted_price: {
       type: Sequelize.DOUBLE
     },
     expire_date: {

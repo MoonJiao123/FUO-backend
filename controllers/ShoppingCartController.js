@@ -32,11 +32,6 @@ Cart.use(cors())
 
 //show all products in the cart for a customer
 Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:customer_id' to /list'
-    //Verify that we have created a session previously
-    // if(req.session.userType ==  null || req.session.userType != "customer"){
-    //     res.status(400).json({error:'Please create sessions'});
-    //     return;
-    // }
 
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     list.findAll({

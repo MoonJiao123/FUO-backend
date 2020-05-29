@@ -49,6 +49,10 @@ product.use(cors())
 product.post('/upsert/:store_id/:product_id', (req, res, next) => {
     console.error("img ");
     console.error("img "+req.body.product_img);//does not wokr
+    if(req.body.coupon != null){
+        var discounted_price = calculateDiscounted(req.body.price, req.body.coupon);
+    }
+    console.error(discounted_price);
     //The update method updates multiple instances that match the where options.
     const userData = {
         product_name: req.body.product_name,
@@ -58,6 +62,7 @@ product.post('/upsert/:store_id/:product_id', (req, res, next) => {
         expire_date: req.body.expire_date,
         stock_amount: req.body.stock_amount,
         coupon: req.body.coupon,
+        discounted_price: discounted_price,
         store_id: req.params.store_id
     }
     
@@ -423,7 +428,12 @@ product.get('/:customer_id/:name/expire_desc/:low/:high', (req, res, next) => {
         })
         .catch(next)
 })
-
+//function to calculate discounted price given price and a string of discount like 20%
+function calculateDiscounted(price, discount){
+    var dis = discount.split("%")[0];
+    var doubledis = parseFloat(dis);
+    return price * (doubledis / 100);
+}
 //*********************** functions for distance sorting start from here ****************************************//
 
 //function1 - To update customer address to coordinate ------------DONE
