@@ -436,9 +436,12 @@ async function updateCustomerCoord(customerID){
     customerlat = await customerInst.getDataValue('customer_lat')
     customerlong = await customerInst.getDataValue('customer_long')
 
-    if ((customerlat==null)||(customerlong==null)) {
+
+
+    if ((customerlat == null) || (customerlong == null)) {
         customerAddress = await customerInst.getDataValue('customer_location')
         result = await geoCoder.geocode(customerAddress)
+        //console.log("geocode result===================" + result)
         var customerlat = result[result.length - 1].latitude
         var customerlong = result[result.length - 1].longitude
         await customerInst.setDataValue('customer_lat',customerlat)
