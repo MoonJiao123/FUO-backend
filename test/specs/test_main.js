@@ -73,11 +73,11 @@ describe('Authentication Test Suite', function(){
   it('should click on the login button submit login info and a logout link is visible', function() {
     return browser
       .url(TEAM_HEROKU_URL)
-      .setValue('#email', 'sun@y.com')
-      .setValue('#password', '12345')
-      .click('#login-form-submit')
-      .waitForVisible('#logout', 3000)
-      .getText('#logout')
+      .setValue('#Email Address', 'moo@MooMooInc.com')
+      .setValue('#Password', 'moomoo123')
+      .click('#LOGIN')
+      .waitForVisible('#LOGOUT', 3000)
+      .getText('#LOGOUT')
       .should.eventually.be.equal('Logout');
   });
 
@@ -86,7 +86,7 @@ describe('Authentication Test Suite', function(){
       .url(TEAM_HEROKU_URL)
       .getText('#logout-text')
       .should.eventually
-      .be.equal("You are now logged out. Thank you for visiting.");
+      .be.equal("You are now logged out. Thank you for visiting."); // NEED TO HAVE THE RIGHT MESSAGE
   });
 
 });
