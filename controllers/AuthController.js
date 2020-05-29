@@ -40,7 +40,7 @@ users.use(cors())
 const BusinessUser = require('../models/BusinessModel.js')
 const CustomerUser = require('../models/CustomerModel.js')
 var nodeGeocoder = require('node-geocoder');
-var options = {provider: 'openstreetmap'};
+var options = { provider: 'openstreetmap' };
 var geoCoder = nodeGeocoder(options);
 
 process.env.SECRET_KEY = 'secret'
@@ -80,25 +80,25 @@ users.post('/business/register', (req, res) => {
                     //it generate its own token after it created the user
                     BusinessUser.create(userData)
                         .then(user => {
-                            res.status(200).json({message: 'Registered!'})
+                            res.status(200).json({ message: 'Registered!' })
                             // MESSAGE NOT GETTING THROUGH
                             console.log(user.email)
                         })
                         .catch(err => {
                             //res.send('error: ' + err)
-                            res.status(400).json({Error: 'Bad request Hi Darien'}) /* Added by Shawn */
+                            res.status(400).json({ Error: 'Bad request Hi Darien' }) /* Added by Shawn */
                             // ERROR MESSAGE NOT GETTING THROUGH
                         })
                 })
             } else {
                 //res.json({ error: 'User already exists' })
-                res.status(400).json({Error: 'User already exists'}) /* Added by Shawn */
+                res.status(400).json({ Error: 'User already exists' }) /* Added by Shawn */
                 // ERROR MESSAGE NOT GETTING THROUGH
             }
         })
         .catch(err => {
             //res.send('error: ' + err)
-            res.status(400).json({Error: err}) /* Added by Shawn */
+            res.status(400).json({ Error: err }) /* Added by Shawn */
         })
 })
 
@@ -129,50 +129,71 @@ users.post('/business/login', (req, res) => {
                     // req.session.userId = user.business_id;
                     // req.session.save();
 
-                    res.status(200).json({token: token, user_id: user.business_id})
+                    res.status(200).json({ token: token, user_id: user.business_id })
                 } else { //Login failed
-                    res.status(400).json({error: 'Incorrect Password'}) //Incorrect password
+                    res.status(400).json({ error: 'Incorrect Password' }) //Incorrect password
                 }
             } else {
-                res.status(400).json({error: 'Email doesn not exist'}) //Unregistered email
+                res.status(400).json({ error: 'Email doesn not exist' }) //Unregistered email
             }
         })
         .catch(err => {
-            res.status(400).json({error: 'No email input found'})
+            res.status(400).json({ error: 'No email input found' })
         })
 
 })
 //get current user from token
-users.post('/me/from/token', (req, res) => {
+users.post('/me/from/token/:usertype', (req, res) => {
     // check header or url parameters or post parameters for token
     var token = req.body.token || req.query.token;
     if (!token) {
-        return res.status(401).json({message: 'Must pass token'});
+        return res.status(401).json({ message: 'Must pass token' });
     }
-// Check token that was passed by decoding token using secret
+    // Check token that was passed by decoding token using secret
     jwt.verify(token, process.env.SECRET_KEY, function (err, user) {
         console.log(user)
 
         if (err) throw err;
-        //return user using the id from w/in JWTToken
-        BusinessUser.findOne({
-            where: {
-                business_id: user.business_id
-            }
-        }).then(user => {
-            console.log("entering function");
-            if (err) throw err;
-            //user = utils.getCleanUser(user);
-            //Note: you can renew token by creating new token(i.e.
-            //refresh it)w/ new expiration time at this point, but I’m
-            //passing the old token back.
-            // var token = utils.generateToken(user);
-            res.status(200).json({
-                user: user,
-                token: token
+        if (req.params.usertype == "business") {
+            //return user using the id from w/in JWTToken
+            BusinessUser.findOne({
+                where: {
+                    business_id: user.business_id
+                }
+            }).then(user => {
+                console.log("entering function");
+                if (err) throw err;
+                //user = utils.getCleanUser(user);
+                //Note: you can renew token by creating new token(i.e.
+                //refresh it)w/ new expiration time at this point, but I’m
+                //passing the old token back.
+                // var token = utils.generateToken(user);
+                res.status(200).json({
+                    user: user,
+                    token: token
+                });
             });
+        } else if(req.params.usertype == "customer") {
+             //return user using the id from w/in JWTToken
+             CustomerUser.findOne({
+                where: {
+                    customer_id: user.customer_id
+                }
+            }).then(user => {
+                console.log("entering function");
+                if (err) throw err;
+                //user = utils.getCleanUser(user);
+                //Note: you can renew token by creating new token(i.e.
+                //refresh it)w/ new expiration time at this point, but I’m
+                //passing the old token back.
+                // var token = utils.generateToken(user);
+                res.status(200).json({
+                    user: user,
+                    token: token
+                });
+            });
+        }
 
-        });
     });
 });
 //PROFILE
@@ -190,15 +211,15 @@ users.get('/business', (req, res) => {
         .then(user => {
             if (user) {
                 res.json(user)
-                res.status(200).json({message: 'User found, authenticated'}) /* Added by Shawn */
+                res.status(200).json({ message: 'User found, authenticated' }) /* Added by Shawn */
             } else {
                 //res.send('User does not exist')
-                res.status(400).json({error: 'User does not exist'}) /* Added by Shawn */
+                res.status(400).json({ error: 'User does not exist' }) /* Added by Shawn */
             }
         })
         .catch(err => {
             //res.send('error: ' + err)
-            res.status(400).json({error: err}) /* Added by Shawn */
+            res.status(400).json({ error: err }) /* Added by Shawn */
         })
 })
 
@@ -212,16 +233,19 @@ users.post('/customer/register', async (req, res) => {
     console.log(req.body.email); //for testing, can be deleted
 
     //Sign up page have customer_location now!!!!
-const userData = {
-    account: req.body.account,
-    password: bcrypt.hashSync(req.body.password, 8),
-    email: req.body.email,
-    address: req.body.address
-}
+
+    const userData = {
+        account: req.body.account,
+        password: bcrypt.hashSync(req.body.password, 8),
+        email: req.body.email,
+        address: req.body.address
+    }
+
     //check validation of address
     customerAddress = await req.body.address
     validation = await geoCoder.geocode(customerAddress)
     // console.log("Inside address validation")
+
     // console.log("customerAddress "+customerAddress)
     // console.log("validation "+validation)
     // console.log("validation==null "+(validation==null))
@@ -229,9 +253,11 @@ const userData = {
     // console.log("validation==empty "+(validation==""))
     // console.log("validation===empty "+(validation===""))
     // console.log("isEmpty(validation) "+isEmpty(validation))
+
     if (validation.length < 1 || validation == undefined) {
         res.status(400).json({message: "invalid address"})
     } else {
+
         //since we only use email and password for login, so we only compare email here
         CustomerUser.findOne({
             where: {
@@ -247,21 +273,21 @@ const userData = {
                         CustomerUser.create(userData)
                             .then(user => {
                                 //res.json({ status: user.email + 'Registered!' })
-                                res.status(200).json({message: req.body}) /* added by Shawn*/
+                                res.status(200).json({ message: req.body }) /* added by Shawn*/
                             })
                             .catch(err => {
                                 res.send('error: ' + err)
-                                res.status(400).json({error: err}) /* added by Shawn*/
+                                res.status(400).json({ error: err }) /* added by Shawn*/
                             })
                     })
                 } else {
                     //res.json({ error: 'User already exists' })
-                    res.status(400).json({error: 'User already exists'}) /* added by Shawn*/
+                    res.status(400).json({ error: 'User already exists' }) /* added by Shawn*/
                 }
             })
             .catch(err => {
                 //res.send('error: ' + err)
-                res.status(400).json({message: req.body}) /* added by Shawn*/
+                res.status(400).json({ message: req.body }) /* added by Shawn*/
             })
     }
 })
@@ -277,7 +303,7 @@ users.get('/logout', (req, res) => {
         console.log('SESSION SUCCESSFULY DESTROYED')
     })
 
-    res.status(200).json({message: 'User successfully logged out!'});
+    res.status(200).json({ message: 'User successfully logged out!' });
 })
 /*
 "message": {
@@ -302,16 +328,16 @@ users.post('/customer/login', (req, res) => {
                     })
 
 
-                    res.status(200).json({token: token})
+                    res.status(200).json({ token: token })
                 } else { //Login failed
-                    res.status(400).json({error: 'Incorret Password'})
+                    res.status(400).json({ error: 'Incorret Password' })
                 }
             } else {
-                res.status(400).json({error: 'This Email does not exist '})
+                res.status(400).json({ error: 'This Email does not exist ' })
             }
         })
         .catch(err => {
-            res.status(400).json({error: 'No email input found'})
+            res.status(400).json({ error: 'No email input found' })
         })
 
 })

@@ -34,12 +34,7 @@ var Cart = db.sequelize.define(
       autoIncrement: true,
       primaryKey: true
     },
-    amount: {
-      type: Sequelize.STRING
-    },
-    total_price: {
-      type: Sequelize.STRING
-    },
+    
     product_id: {
       type: Sequelize.INTEGER,
       references: {
