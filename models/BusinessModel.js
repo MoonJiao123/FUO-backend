@@ -22,9 +22,6 @@ module.exports = db.sequelize.define(
       autoIncrement: true,
       primaryKey: true
     },
-    account: {
-      type: Sequelize.STRING
-    },
     name: {
       type: Sequelize.STRING
     },

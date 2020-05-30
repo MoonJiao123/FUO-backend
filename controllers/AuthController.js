@@ -56,7 +56,6 @@ users.post('/business/register', (req, res) => {
     console.log(req.body.email); //for testing, can be deleted
 
     const userData = {
-        account: req.body.account,
         password: bcrypt.hashSync(req.body.password, 8),
         email: req.body.email,
         mobile: req.body.mobile,
