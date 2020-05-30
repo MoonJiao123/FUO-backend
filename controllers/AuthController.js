@@ -267,6 +267,7 @@ users.post('/customer/register', async (req, res) => {
                     bcrypt.hash(req.body.password, 10, (err, hash) => {
                         userData.password = hash
                         //it generate its own token after it created the user
+                        console.log(userData);
                         CustomerUser.create(userData)
                             .then(user => {
                                 //res.json({ status: user.email + 'Registered!' })
@@ -287,6 +288,7 @@ users.post('/customer/register', async (req, res) => {
                 res.status(400).json({ message: req.body }) /* added by Shawn*/
             })
     }
+    
 })
 
 //LOGOUT - KILL THE SESSION AND WIPE TEH COOKIE
