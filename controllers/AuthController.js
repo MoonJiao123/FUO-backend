@@ -232,6 +232,7 @@ users.post('/customer/register', async (req, res) => {
     console.log(req.body.email); //for testing, can be deleted
 
     //Sign up page have customer_location now!!!!
+
     const userData = {
         account: req.body.account,
         password: bcrypt.hashSync(req.body.password, 8),
@@ -243,18 +244,18 @@ users.post('/customer/register', async (req, res) => {
     customerAddress = await req.body.address
     validation = await geoCoder.geocode(customerAddress)
     // console.log("Inside address validation")
-    console.log("customerAddress " + customerAddress)
-    console.log("validation " + validation)
+
+    // console.log("customerAddress "+customerAddress)
+    // console.log("validation "+validation)
     // console.log("validation==null "+(validation==null))
     // console.log("validation===null "+(validation===null))
     // console.log("validation==empty "+(validation==""))
     // console.log("validation===empty "+(validation===""))
     // console.log("isEmpty(validation) "+isEmpty(validation))
-    if (validation == "") {
-        res.status(400).json({ message: "invalid address" })
-    }
 
-    if (validation != "") {
+    if (validation.length < 1 || validation == undefined) {
+        res.status(400).json({message: "invalid address"})
+    } else {
 
         //since we only use email and password for login, so we only compare email here
         CustomerUser.findOne({
