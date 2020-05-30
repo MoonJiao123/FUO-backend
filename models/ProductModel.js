@@ -30,28 +30,36 @@ var Product = db.sequelize.define(
       primaryKey: true
     },
     product_name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     }, 
     product_img: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     category: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     price: {
-      type: Sequelize.DOUBLE
+      type: Sequelize.DOUBLE,
+      defaultValue: 0
     },
     discounted_price: {
-      type: Sequelize.DOUBLE
+      type: Sequelize.DOUBLE,
+      defaultValue: 0
     },
     expire_date: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     stock_amount: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      defaultValue: 0
     },
     coupon: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     distance: {
        type: Sequelize.VIRTUAL

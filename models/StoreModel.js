@@ -30,16 +30,20 @@ var Store = db.sequelize.define(
             primaryKey: true
         },
         address: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            defaultValue: "None"
         },
         store_name: {
-            type: Sequelize.STRING
+            type: Sequelize.STRING,
+            defaultValue: "None"
         },
         store_lat: {
-            type: Sequelize.DOUBLE
+            type: Sequelize.DOUBLE,
+            defaultValue: 0
         },
         store_long: {
-            type: Sequelize.DOUBLE
+            type: Sequelize.DOUBLE,
+            defaultValue: 0
         },
         // dis_to_customer: {
         //     type: Sequelize.DOUBLE

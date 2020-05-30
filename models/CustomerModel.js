@@ -24,19 +24,24 @@ var Customer = db.sequelize.define(
       primaryKey: true
     },
     password: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     email: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     customer_location: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     customer_lat: {
-      type: Sequelize.DOUBLE
+      type: Sequelize.DOUBLE,
+      defaultValue: 0
     },
     customer_long: {
-      type: Sequelize.DOUBLE
+      type: Sequelize.DOUBLE,
+      defaultValue: 0
     }
   },
   {

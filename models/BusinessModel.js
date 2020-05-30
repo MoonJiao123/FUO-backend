@@ -23,19 +23,24 @@ module.exports = db.sequelize.define(
       primaryKey: true
     },
     name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     password: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     email: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     mobile: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     },
     api: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      defaultValue: "None"
     }
   },
   {
