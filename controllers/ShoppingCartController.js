@@ -27,6 +27,8 @@ const Cart = express.Router()
 const cors = require('cors')
 const list = require('../models/CartModel.js')
 const product = require('../models/ProductModel')
+const store = require('../models/StoreModel')
+const business = require('../models/BusinessModel')
 const { Op } = require("sequelize");
 
 Cart.use(cors())
@@ -41,7 +43,16 @@ Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:cust
         where: {
             customer_id: req.params.customer_id
         },
-        include: [{model: product, as: 'product'}]
+        include: {
+            model: product,
+            as: 'product',
+            include: {
+                model: store,
+                attributes: ['address'],
+                as: 'store_product',
+                include:  {model: business, attributes: ['name']} 
+            }
+        }
     })
         .then(function (rowsUpdated) {
             res.status(200).json(rowsUpdated)
