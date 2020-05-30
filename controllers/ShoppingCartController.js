@@ -86,6 +86,7 @@ Cart.post('/add/:customer_id', (req, res) => {
     //     return;
     // }
     //check if product exist in product table
+    console.log("productId "+req.body.product_id)
     product.findOne({ where: { product_id: req.body.product_id} })
     .then(product => {
         if (!product) {
@@ -125,12 +126,14 @@ Cart.post('/add/:customer_id', (req, res) => {
                 .catch(err => {
                     //res.send('error: ' + err)
                     res.status(400).json({ error: err }) //Shawn
+                    //console.log("err is in if statement")
                 })
         }
     })
     .catch(err => {
         //res.send('error: ' + err)
         res.status(400).json({ error: err }) //Shawn
+        console.log("err is out of  if statement")
     })
 })
 
