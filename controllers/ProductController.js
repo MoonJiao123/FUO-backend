@@ -206,7 +206,7 @@ product.get('/printallproduct/:store_id', (req, res, next) => {
 product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, res, next) =>{
 
     tempName = req.params.name
-    tempName = await tempName.split('+').join(' ')
+    tempName = await tempName.split(';').join(' ')
 
     whereStatement = {}
     switch (req.params.sortmode){
