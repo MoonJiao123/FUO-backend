@@ -432,7 +432,7 @@ product.get('/:customer_id/:name/expire_desc/:low/:high', (req, res, next) => {
 function calculateDiscounted(price, discount){
     var dis = discount.split("%")[0];
     var doubledis = parseFloat(dis);
-    return price * (doubledis / 100);
+    return price * (1 - (doubledis / 100));
 }
 //*********************** functions for distance sorting start from here ****************************************//
 
