@@ -235,7 +235,7 @@ users.post('/customer/register', async (req, res) => {
     const userData = {
         password: bcrypt.hashSync(req.body.password, 8),
         email: req.body.email,
-        address: req.body.address
+        customer_location: req.body.customer_location
     }
 
     //check validation of address
@@ -267,6 +267,7 @@ users.post('/customer/register', async (req, res) => {
                     bcrypt.hash(req.body.password, 10, (err, hash) => {
                         userData.password = hash
                         //it generate its own token after it created the user
+                        console.log(userData);
                         CustomerUser.create(userData)
                             .then(user => {
                                 //res.json({ status: user.email + 'Registered!' })
