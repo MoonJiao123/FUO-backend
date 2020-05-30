@@ -227,7 +227,6 @@ users.get('/business', (req, res) => {
 //However, Internal server error 500 in backend. need to fix ;-;
 users.post('/customer/register', async (req, res) => {
 
-    console.log(req.body.name); //for testing, can be deleted
     console.log(req.body); //for testing, can be deleted
     console.log(req.body.email); //for testing, can be deleted
 
