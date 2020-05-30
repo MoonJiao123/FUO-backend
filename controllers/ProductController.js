@@ -244,13 +244,13 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
 
     whereStatement = {}
     switch (req.params.sortmode){
-        case 'distance':
+        case 'Distance':
             orderStatement = []
             break;
-        case 'price':
+        case 'Price':
             orderStatement = [['discounted_price', 'ASC']]
             break;
-        case 'expire_date':
+        case 'Expire_date':
             orderStatement = [['expire_date', 'ASC']]
             break;
         default:
