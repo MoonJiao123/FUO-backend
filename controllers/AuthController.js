@@ -234,7 +234,6 @@ users.post('/customer/register', async (req, res) => {
     //Sign up page have customer_location now!!!!
 
     const userData = {
-        account: req.body.account,
         password: bcrypt.hashSync(req.body.password, 8),
         email: req.body.email,
         address: req.body.address
