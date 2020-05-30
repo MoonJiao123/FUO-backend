@@ -616,6 +616,7 @@ function coord2dist(LL) {
     if ((phic == null) || (lbdc == null)) {
         return dist
     }
+    //////
     phic = phic / 180 * Math.PI
     lbdc = lbdc / 180 * Math.PI
     // console.log("phic "+phic)
