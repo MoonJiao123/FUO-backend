@@ -108,7 +108,7 @@ var Business = require('./controllers/BusinessController.js')
 app.use('/business', Business)
 
 //access product_upload route
-var Cart = require('./controllers/ShoppingCartController.js')
+var Cart = require('./controllers/ShoppingListController.js')
 
 app.use('/cart', Cart)
 
