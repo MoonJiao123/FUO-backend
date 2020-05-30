@@ -26,6 +26,7 @@ const express = require('express')
 const Cart = express.Router()
 const cors = require('cors')
 const list = require('../models/CartModel.js')
+const product = require('../models/ProductModel')
 const { Op } = require("sequelize");
 
 Cart.use(cors())
@@ -36,9 +37,11 @@ Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:cust
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     list.findAll({
         //The where option is used to filter the query.
+        attributes: ['product_id'],
         where: {
             customer_id: req.params.customer_id
-        }
+        },
+        include: [{model: product, as: 'product'}]
     })
         .then(function (rowsUpdated) {
             res.status(200).json(rowsUpdated)
