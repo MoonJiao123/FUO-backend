@@ -233,7 +233,7 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
 
 
     item.findAll({
-        attributes: ['discounted_price','expire_date','category','store_id','product_id'],
+        attributes: ['discounted_price','expire_date','category','store_id','product_id','product_img','product_name','stock_amount'],
         where : whereStatement,
         order: orderStatement
     })
