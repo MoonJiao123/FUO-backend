@@ -59,19 +59,6 @@ Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:cust
             }
         }
     })
-    //const users = sequelize.query("select distinct p.`product_id`,p.`category`, p.`coupon`,p.`discounted_price`, p.`expire_date`, p.`price`,p.`product_img`,p.`product_name`,p.`stock_amount`,p.`store_id` from `carts`c inner join products p on c.`product_id`= p.`product_id` where c.`customer_id`=" +req.params.customer_id+"order by p.`product_id`", { type: QueryTypes.SELECT });
-    // const users =  db.sequelize.query("select distinct p.`product_id`,p.`category`, p.`coupon`,p.`discounted_price`, p.`expire_date`, p.`price`,p.`product_img`,p.`product_name`,p.`stock_amount`,p.`store_id` from `carts`c inner join products p on c.`product_id`= p.`product_id` where c.`customer_id`=21 order by p.`product_id`",{
-    //     type: db.sequelize.QueryTypes.SELECT
-    // });
-    // const users = db.sequelize.query("select * from carts",{
-    //         type: db.sequelize.QueryTypes.SELECT
-    //     });
-    // console.error(JSON.stringify(users[0], null, 2));
-    // if(users){
-    //     res.status(200).json({results:users})
-    // } else{
-    //     res.status(400).json({message:'something is wrong'})
-    // }
             .then(function (rowsUpdated) {
             res.status(200).json(rowsUpdated)
         })
@@ -149,7 +136,31 @@ Cart.delete('/delete/:customer_id/:product_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
+             //The findAll method generates a standard SELECT query which will retrieve all entries from the table
+    list.findAll({
+        //The where option is used to filter the query.
+        attributes: ['product_id'],
+        where: {
+            customer_id: req.params.customer_id
+        },
+        include: {
+            model: product,
+            as: 'product',
+            where:{
+                product_id: {[Op.col]: 'carts.product_id'}
+            },
+            include: {
+                model: store,
+                attributes: ['address'],
+                as: 'store_product',
+                include:  {model: business, attributes: ['name']} 
+            }
+        }
+    })
+            .then(function (rowsUpdated) {
             res.status(200).json(rowsUpdated)
+        })
+        .catch(next)
         })
         .catch(next)
 })
@@ -168,7 +179,31 @@ Cart.delete('/delete/:customer_id', (req, res, next) => {
         }
     })
         .then(function (rowsUpdated) {
+             //The findAll method generates a standard SELECT query which will retrieve all entries from the table
+    list.findAll({
+        //The where option is used to filter the query.
+        attributes: ['product_id'],
+        where: {
+            customer_id: req.params.customer_id
+        },
+        include: {
+            model: product,
+            as: 'product',
+            where:{
+                product_id: {[Op.col]: 'carts.product_id'}
+            },
+            include: {
+                model: store,
+                attributes: ['address'],
+                as: 'store_product',
+                include:  {model: business, attributes: ['name']} 
+            }
+        }
+    })
+            .then(function (rowsUpdated) {
             res.status(200).json(rowsUpdated)
+        })
+        .catch(next)
         })
         .catch(next)
 })
