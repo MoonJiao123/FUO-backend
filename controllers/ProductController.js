@@ -200,6 +200,67 @@ product.get('/printallproduct/:store_id', (req, res, next) => {
     //console.log("after then");
 })
 
+///==============      add expiration date, discount amount, category after searching by name     ==================
+
+//0-search by name in ascending price order with distance sorting
+product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, res, next) =>{
+
+    whereStatement = {}
+    switch (req.params.sortmode){
+        case 'Distance':
+            orderStatement = []
+            break;
+        case 'Price':
+            orderStatement = [['discounted_price', 'ASC']]
+            break;
+        case 'Expire_date':
+            orderStatement = [['expire_date', 'ASC']]
+            break;
+        default:
+    }
+    // console.log("product model attri: ", item.rawAttributes)
+    if (!(req.params.low == 0 && req.params.high == 1000)) {
+        whereStatement.price = {[Op.between]: [req.params.low, req.params.high]}
+    }
+    if (!(req.params.category=="None")) {
+        whereStatement.category = req.params.category
+    }
+
+    whereStatement.product_name = {[Op.like]: '%' + req.params.name + '%'}
+
+    // console.log("whereStatement ", whereStatement)
+    // console.log("orderStatement ", orderStatement)
+
+
+    item.findAll({
+        attributes: ['discounted_price','expire_date','category','store_id','product_id'],
+        where : whereStatement,
+        order: orderStatement
+    })
+        .then( async (rowsUpdated) => {
+            // console.log('rowsUpdated.length '+rowsUpdated.length)
+            // console.log('in routing, rowsUpdated[0] ', rowsUpdated[0])
+            // tmp = await rowsUpdated[0].getDataValue('product_id')
+            // console.log('pid0 ', tmp)
+            // tmp = await rowsUpdated[0].getDataValue('category')
+            // console.log('cat0 ', tmp)
+            row1 = await sortByDist(req.params.customer_id, rowsUpdated)
+            console.log('rowsUpdated'+rowsUpdated)
+            console.log('row1 '+row1)
+            //console.log(result)
+            console.log("number of row1 " + row1.length)
+            console.log('number of rowsUpdated '+rowsUpdated.length)
+            if (req.params.sortmode == 'Distance') {
+                console.log("sort by distance")
+                res.status(200).json(row1)
+            } else {
+                result = await mask(rowsUpdated, row1)
+                res.status(200).json(result)
+            }
+        })
+        .catch(next)
+})
+
 //1-search by category with distance sorting
 product.get('/:customer_id/:category', (req, res, next) => {
     console.log(req.params.customer_id)
@@ -236,66 +297,6 @@ product.get('/:customer_id/:category/:low/:high', (req, res, next) => {
         })
         .catch(next)
 })
-
-///==============      add expiration date, discount amount, category after searching by name     ==================
-
-//3-search by name in ascending price order with distance sorting
-product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, res, next) =>{
-
-    whereStatement = {}
-    switch (req.params.sortmode){
-        case 'Distance':
-            orderStatement = []
-            break;
-        case 'Price':
-            orderStatement = [['discounted_price', 'ASC']]
-            break;
-        case 'Expire_date':
-            orderStatement = [['expire_date', 'ASC']]
-            break;
-        default:
-    }
-    // console.log("product model attri: ", item.rawAttributes)
-    if (!(req.params.low == 0 && req.params.high == 1000)) {
-        whereStatement.price = {[Op.between]: [req.params.low, req.params.high]}
-    }
-    if (!(req.params.category=="None")) {
-        whereStatement.category = req.params.category
-    }
-
-    whereStatement.product_name = {[Op.like]: '%' + req.params.name + '%'}
-
-    // console.log("whereStatement ", whereStatement)
-    // console.log("orderStatement ", orderStatement)
-
-
-    item.findAll({
-        attributes: ['discounted_price','expire_date','category','store_id'],
-        where : whereStatement,
-        order: orderStatement
-    })
-        .then( async (rowsUpdated) => {
-            // console.log('rowsUpdated.length '+rowsUpdated.length)
-            // console.log('in routing, rowsUpdated[0] ', rowsUpdated[0])
-            // tmp = await rowsUpdated[0].getDataValue('product_id')
-            // console.log('pid0 ', tmp)
-            // tmp = await rowsUpdated[0].getDataValue('category')
-            // console.log('cat0 ', tmp)
-            row1 = await sortByDist(req.params.customer_id, rowsUpdated)
-            //console.log('rowsUpdated'+rowsUpdated)
-            //console.log('row1 '+row1)
-            //console.log(result)
-            if (req.params.sortmode == 'distance') {
-                // console.log("sort by distance")
-                res.status(200).json(row1)
-            } else {
-                result = await mask(rowsUpdated, row1)
-                res.status(200).json(result)
-            }
-        })
-        .catch(next)
-})
-
 
 //3-search by name in ascending price order with distance sorting
 product.get('/:customer_id/:name/price_asc', (req, res, next) => {
@@ -664,10 +665,13 @@ async function sortByDist(customerID, items, numKeep=20) {
     newItems = []
 
     //To return the numbers of distances that associated with products
+    console.log("numKeep ", numKeep)
+    console.log("Math.min(nitems, numKeep)", Math.min(nitems, numKeep))
     for (var i = 0; i < Math.min(nitems, numKeep); i++) {
         await items[perm[i]].setDataValue('distance', dist[i])
         newItems.push(items[perm[i]])
     }
+    console.log("newItems.length ", newItems.length)
 
     return newItems
 }
