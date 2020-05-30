@@ -205,6 +205,9 @@ product.get('/printallproduct/:store_id', (req, res, next) => {
 //0-search by name in ascending price order with distance sorting
 product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, res, next) =>{
 
+    tempName = req.params.name
+    tempName = await tempName.split(';').join(' ')
+
     whereStatement = {}
     switch (req.params.sortmode){
         case 'Distance':
@@ -226,7 +229,7 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
         whereStatement.category = req.params.category
     }
 
-    whereStatement.product_name = {[Op.like]: '%' + req.params.name + '%'}
+    whereStatement.product_name = {[Op.like]: '%' + tempName + '%'}
 
     // console.log("whereStatement ", whereStatement)
     // console.log("orderStatement ", orderStatement)
