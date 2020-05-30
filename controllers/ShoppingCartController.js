@@ -30,7 +30,9 @@ const product = require('../models/ProductModel')
 const store = require('../models/StoreModel')
 const business = require('../models/BusinessModel')
 const { Op } = require("sequelize");
-
+const Sequelize = require('sequelize')
+const { QueryTypes } = require('sequelize');
+const db = require('../config/DB')
 Cart.use(cors())
 
 //show all products in the cart for a customer
@@ -46,6 +48,9 @@ Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:cust
         include: {
             model: product,
             as: 'product',
+            where:{
+                product_id: {[Op.col]: 'carts.product_id'}
+            },
             include: {
                 model: store,
                 attributes: ['address'],
@@ -54,7 +59,20 @@ Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:cust
             }
         }
     })
-        .then(function (rowsUpdated) {
+    //const users = sequelize.query("select distinct p.`product_id`,p.`category`, p.`coupon`,p.`discounted_price`, p.`expire_date`, p.`price`,p.`product_img`,p.`product_name`,p.`stock_amount`,p.`store_id` from `carts`c inner join products p on c.`product_id`= p.`product_id` where c.`customer_id`=" +req.params.customer_id+"order by p.`product_id`", { type: QueryTypes.SELECT });
+    // const users =  db.sequelize.query("select distinct p.`product_id`,p.`category`, p.`coupon`,p.`discounted_price`, p.`expire_date`, p.`price`,p.`product_img`,p.`product_name`,p.`stock_amount`,p.`store_id` from `carts`c inner join products p on c.`product_id`= p.`product_id` where c.`customer_id`=21 order by p.`product_id`",{
+    //     type: db.sequelize.QueryTypes.SELECT
+    // });
+    // const users = db.sequelize.query("select * from carts",{
+    //         type: db.sequelize.QueryTypes.SELECT
+    //     });
+    // console.error(JSON.stringify(users[0], null, 2));
+    // if(users){
+    //     res.status(200).json({results:users})
+    // } else{
+    //     res.status(400).json({message:'something is wrong'})
+    // }
+            .then(function (rowsUpdated) {
             res.status(200).json(rowsUpdated)
         })
         .catch(next)

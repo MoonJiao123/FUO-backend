@@ -66,5 +66,6 @@ var Product = db.sequelize.define(
 
 //product belongs to store
 Product.belongsTo(Store, { as: 'store_product', foreignKey: 'store_id' });
+//Product.belongsTo(Cart, { as: 'cart_product', foreignKey: 'cart_id' , constraints: false});
 
 module.exports = Product;

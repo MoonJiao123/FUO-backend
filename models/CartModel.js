@@ -58,7 +58,7 @@ var Cart = db.sequelize.define(
 )
 
 //cart has many products
-Cart.hasMany(Product, { as: 'product', foreignKey: 'product_id', constraints: false })
+Cart.belongsTo(Product, { as: 'product', foreignKey: 'product_id', constraints: false })
 //cart belongs to customer
 Cart.belongsTo(Customer, { as: 'customer_cart', foreignKey: 'customer_id' })
 
