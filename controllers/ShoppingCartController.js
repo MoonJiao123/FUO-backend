@@ -79,15 +79,15 @@ Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:cust
 })
 
 //add item to cart
-Cart.post('/add/:customer_id', (req, res) => {
+Cart.post('/add/:customer_id/:product_id', (req, res) => {
     //Verify that we have created a session previously
     // if(req.session.userType ==  null || req.session.userType != "customer"){
     //     res.status(400).json({error:'Please create sessions'});
     //     return;
     // }
     //check if product exist in product table
-    console.log("productId "+req.body.product_id)
-    product.findOne({ where: { product_id: req.body.product_id} })
+    console.log("productId "+req.params.product_id)
+    product.findOne({ where: { product_id: req.params.product_id} })
     .then(product => {
         if (!product) {
             //The create method uilds a new model instance and calls save on it.
@@ -100,13 +100,13 @@ Cart.post('/add/:customer_id', (req, res) => {
                 //might delete amount and tootal price
                 //amount: req.body.amount,
                 //total_price: req.body.total_price,
-                product_id: req.body.product_id,
+                product_id: req.params.product_id,
                 customer_id: req.params.customer_id
             }
             //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
             list.findOne({
                 where: {
-                    product_id: req.body.product_id,
+                    product_id: req.params.product_id,
                     customer_id: req.params.customer_id
                 }
             })
@@ -126,7 +126,7 @@ Cart.post('/add/:customer_id', (req, res) => {
                 .catch(err => {
                     //res.send('error: ' + err)
                     res.status(400).json({ error: err }) //Shawn
-                    //console.log("err is in if statement")
+                    console.log("err is in if statement")
                 })
         }
     })
