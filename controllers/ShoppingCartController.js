@@ -61,46 +61,62 @@ Cart.get('/list/:customer_id', (req, res, next) => {     // Changed '/list/:cust
 })
 
 //add item to cart
-Cart.post('/add/:customer_id/:product_id', (req, res) => {
+Cart.post('/add/:customer_id', (req, res) => {
     //Verify that we have created a session previously
     // if(req.session.userType ==  null || req.session.userType != "customer"){
     //     res.status(400).json({error:'Please create sessions'});
     //     return;
     // }
-    const userData = {
-        //might delete amount and tootal price
-        //amount: req.body.amount,
-        //total_price: req.body.total_price,
-        product_id: req.params.product_id,
-        customer_id: req.params.customer_id
-    }
-    //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
-    list.findOne({
-        where: {
-            product_id: req.params.product_id,
-            customer_id: req.session.userId
+    //check if product exist in product table
+    product.findOne({ where: { product_id: req.body.product_id} })
+    .then(product => {
+        if (!product) {
+            //The create method uilds a new model instance and calls save on it.
+            //it generate its own token after it created the user
+            res.status(400).json({ status: 'item does not exist' })
+
+        }
+        else{
+            const userData = {
+                //might delete amount and tootal price
+                //amount: req.body.amount,
+                //total_price: req.body.total_price,
+                product_id: req.body.product_id,
+                customer_id: req.params.customer_id
+            }
+            //The findOne method obtains the first entry it finds (that fulfills the optional query options, if provided
+            list.findOne({
+                where: {
+                    product_id: req.body.product_id,
+                    customer_id: req.params.customer_id
+                }
+            })
+                //it generate its own token after it created the user
+                .then(user => {
+                    if (!user) {
+                        //The create method uilds a new model instance and calls save on it.
+                        //it generate its own token after it created the user
+                        list.create(userData)
+                        res.status(200).json({ status: 'Added item to cart' })
+        
+                    }
+                    else{
+                        res.status(400).json({ status: 'item already exists' })
+                    }
+                })
+                .catch(err => {
+                    //res.send('error: ' + err)
+                    res.status(400).json({ error: err }) //Shawn
+                })
         }
     })
-        //it generate its own token after it created the user
-        .then(user => {
-            if (!user) {
-                //The create method uilds a new model instance and calls save on it.
-                //it generate its own token after it created the user
-                list.create(userData)
-                res.status(200).json({ status: 'Added item to cart' })
-
-            }
-            else{
-                res.status(400).json({ status: 'item already exists' })
-            }
-        })
-        .catch(err => {
-            //res.send('error: ' + err)
-            res.status(400).json({ error: err }) //Shawn
-        })
+    .catch(err => {
+        //res.send('error: ' + err)
+        res.status(400).json({ error: err }) //Shawn
+    })
 })
 
-//delete item from cart
+// //delete item from cart
 Cart.delete('/delete/:customer_id/:product_id', (req, res, next) => {
     //Verify that we have created a session previously
     // if(req.session.userType ==  null || req.session.userType != "customer"){
