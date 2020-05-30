@@ -239,7 +239,7 @@ users.post('/customer/register', async (req, res) => {
     }
 
     //check validation of address
-    customerAddress = await req.body.address
+    customerAddress = await req.body.customer_location
     validation = await geoCoder.geocode(customerAddress)
     // console.log("Inside address validation")
 
@@ -288,6 +288,7 @@ users.post('/customer/register', async (req, res) => {
                 res.status(400).json({ message: req.body }) /* added by Shawn*/
             })
     }
+    
 })
 
 //LOGOUT - KILL THE SESSION AND WIPE TEH COOKIE
