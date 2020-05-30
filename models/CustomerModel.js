@@ -23,9 +23,6 @@ var Customer = db.sequelize.define(
       autoIncrement: true,
       primaryKey: true
     },
-    account: {
-      type: Sequelize.STRING
-    },
     password: {
       type: Sequelize.STRING
     },

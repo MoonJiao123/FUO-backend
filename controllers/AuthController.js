@@ -56,7 +56,6 @@ users.post('/business/register', (req, res) => {
     console.log(req.body.email); //for testing, can be deleted
 
     const userData = {
-        account: req.body.account,
         password: bcrypt.hashSync(req.body.password, 8),
         email: req.body.email,
         mobile: req.body.mobile,
@@ -228,21 +227,19 @@ users.get('/business', (req, res) => {
 //However, Internal server error 500 in backend. need to fix ;-;
 users.post('/customer/register', async (req, res) => {
 
-    console.log(req.body.name); //for testing, can be deleted
     console.log(req.body); //for testing, can be deleted
     console.log(req.body.email); //for testing, can be deleted
 
     //Sign up page have customer_location now!!!!
 
     const userData = {
-        account: req.body.account,
         password: bcrypt.hashSync(req.body.password, 8),
         email: req.body.email,
-        address: req.body.address
+        customer_location: req.body.customer_location
     }
 
     //check validation of address
-    customerAddress = await req.body.address
+    customerAddress = await req.body.customer_location
     validation = await geoCoder.geocode(customerAddress)
     // console.log("Inside address validation")
 

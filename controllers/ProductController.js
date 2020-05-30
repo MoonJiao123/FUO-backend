@@ -203,6 +203,7 @@ product.get('/printallproduct/:store_id', (req, res, next) => {
 //1-search by category with distance sorting
 product.get('/:customer_id/:category', (req, res, next) => {
     console.log(req.params.customer_id)
+    console.log("req.params.category "+req.params.category)
     //The findAll method generates a standard SELECT query which will retrieve all entries from the table
     item.findAll({
         where: {
@@ -235,6 +236,66 @@ product.get('/:customer_id/:category/:low/:high', (req, res, next) => {
         })
         .catch(next)
 })
+
+///==============      add expiration date, discount amount, category after searching by name     ==================
+
+//3-search by name in ascending price order with distance sorting
+product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, res, next) =>{
+
+    whereStatement = {}
+    switch (req.params.sortmode){
+        case 'distance':
+            orderStatement = []
+            break;
+        case 'price':
+            orderStatement = [['discounted_price', 'ASC']]
+            break;
+        case 'expire_date':
+            orderStatement = [['expire_date', 'ASC']]
+            break;
+        default:
+    }
+    // console.log("product model attri: ", item.rawAttributes)
+    if (!(req.params.low == 0 && req.params.high == 1000)) {
+        whereStatement.price = {[Op.between]: [req.params.low, req.params.high]}
+    }
+    if (!(req.params.category=="None")) {
+        whereStatement.category = req.params.category
+    }
+
+    whereStatement.product_name = {[Op.like]: '%' + req.params.name + '%'}
+
+    // console.log("whereStatement ", whereStatement)
+    // console.log("orderStatement ", orderStatement)
+
+
+    item.findAll({
+        attributes: ['discounted_price','expire_date','category','store_id'],
+        where : whereStatement,
+        order: orderStatement
+    })
+        .then( async (rowsUpdated) => {
+            // console.log('rowsUpdated.length '+rowsUpdated.length)
+            // console.log('in routing, rowsUpdated[0] ', rowsUpdated[0])
+            // tmp = await rowsUpdated[0].getDataValue('product_id')
+            // console.log('pid0 ', tmp)
+            // tmp = await rowsUpdated[0].getDataValue('category')
+            // console.log('cat0 ', tmp)
+            row1 = await sortByDist(req.params.customer_id, rowsUpdated)
+            //console.log('rowsUpdated'+rowsUpdated)
+            //console.log('row1 '+row1)
+            //console.log(result)
+            if (req.params.sortmode == 'distance') {
+                // console.log("sort by distance")
+                res.status(200).json(row1)
+            } else {
+                result = await mask(rowsUpdated, row1)
+                res.status(200).json(result)
+            }
+        })
+        .catch(next)
+})
+
 
 //3-search by name in ascending price order with distance sorting
 product.get('/:customer_id/:name/price_asc', (req, res, next) => {
@@ -434,19 +495,20 @@ function calculateDiscounted(price, discount){
     var doubledis = parseFloat(dis);
     return price * (doubledis / 100);
 }
+
 //*********************** functions for distance sorting start from here ****************************************//
 
 //function1 - To update customer address to coordinate ------------DONE
 async function updateCustomerCoord(customerID){
 
+    // console.log('customerID ', customerID)
     customerInst = await customer.findOne({
         where: {customer_id: customerID}
     })
+    // console.log('customerInst ', customerInst)
 
-    customerlat = await customerInst.getDataValue('customer_lat')
-    customerlong = await customerInst.getDataValue('customer_long')
-
-
+    // console.log('customerlat ', customerlat)
+    // console.log('customerlong ', customerlong)
 
     if ((customerlat == null) || (customerlong == null)) {
         customerAddress = await customerInst.getDataValue('customer_location')
@@ -476,13 +538,18 @@ async function getCustomerData(customerID, attri) {
 
 //function3 - To get customer data ------------DONE
 async function getStoreInfo(items, attri) {
+    // console.log("attri ", attri)
     promises = items.map( async item => {
-        if (item.store_id == null) {
+        pid = await item.getDataValue('product_id')
+        sid = await item.getDataValue('store_id')
+        // console.log("item.product_id ", pid)
+        // console.log("item.store_id ", sid)
+        if (sid == null) {
             return null
         } else {
             await store.findOne({
                 where: {
-                    store_id: item.store_id
+                    store_id: sid
                 }
             }).then(
                 async stores => {
@@ -576,21 +643,22 @@ function coord2dist(LL) {
 async function sortByDist(customerID, items, numKeep=20) {
 
     await updateCustomerCoord(customerID);
-
+    // console.log("finished updateCustomerCoord")
     //To get latitude and longitude of customer
+    // console.log("in sortByDist, items[0]: ", items[0])
     LL = await getLL(customerID, items)
-    //console.log("LL "+LL)
+    // console.log("LL "+LL)
 
     //To get the distances from products to customer
     dist = coord2dist(LL)
-    //console.log("dist "+dist)
+    // console.log("dist "+dist)
 
     //To sort the distances and keep check of permutation
     perm = Array.from(Array(dist.length).keys())
     associatedSort(dist, perm)
 
-    //console.log("sorted dist "+dist)
-    //console.log("perm "+perm)
+    // console.log("sorted dist "+dist)
+    // console.log("perm "+perm)
 
     nitems = items.length
     newItems = []
