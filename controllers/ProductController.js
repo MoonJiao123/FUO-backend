@@ -234,34 +234,37 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
     // console.log("whereStatement ", whereStatement)
     // console.log("orderStatement ", orderStatement)
 
-
-    item.findAll({
-        attributes: ['discounted_price','expire_date','category','store_id','product_id','product_img','product_name','stock_amount'],
-        where : whereStatement,
-        order: orderStatement
-    })
-        .then( async (rowsUpdated) => {
-            // console.log('rowsUpdated.length '+rowsUpdated.length)
-            // console.log('in routing, rowsUpdated[0] ', rowsUpdated[0])
-            // tmp = await rowsUpdated[0].getDataValue('product_id')
-            // console.log('pid0 ', tmp)
-            // tmp = await rowsUpdated[0].getDataValue('category')
-            // console.log('cat0 ', tmp)
-            row1 = await sortByDist(req.params.customer_id, rowsUpdated)
-            console.log('rowsUpdated'+rowsUpdated)
-            console.log('row1 '+row1)
-            //console.log(result)
-            console.log("number of row1 " + row1.length)
-            console.log('number of rowsUpdated '+rowsUpdated.length)
-            if (req.params.sortmode == 'Distance') {
-                console.log("sort by distance")
-                res.status(200).json(row1)
-            } else {
-                result = await mask(rowsUpdated, row1)
-                res.status(200).json(result)
-            }
+    if (req.params.low > req.params.high) {
+        res.status(400).json({message: "invalid input for price range"})
+    } else {
+        item.findAll({
+            attributes: ['discounted_price', 'expire_date', 'category', 'store_id', 'product_id', 'product_img', 'product_name', 'stock_amount'],
+            where: whereStatement,
+            order: orderStatement
         })
-        .catch(next)
+            .then(async (rowsUpdated) => {
+                // console.log('rowsUpdated.length '+rowsUpdated.length)
+                // console.log('in routing, rowsUpdated[0] ', rowsUpdated[0])
+                // tmp = await rowsUpdated[0].getDataValue('product_id')
+                // console.log('pid0 ', tmp)
+                // tmp = await rowsUpdated[0].getDataValue('category')
+                // console.log('cat0 ', tmp)
+                row1 = await sortByDist(req.params.customer_id, rowsUpdated)
+                console.log('rowsUpdated' + rowsUpdated)
+                console.log('row1 ' + row1)
+                //console.log(result)
+                console.log("number of row1 " + row1.length)
+                console.log('number of rowsUpdated ' + rowsUpdated.length)
+                if (req.params.sortmode == 'Distance') {
+                    console.log("sort by distance")
+                    res.status(200).json(row1)
+                } else {
+                    result = await mask(rowsUpdated, row1)
+                    res.status(200).json(result)
+                }
+            })
+            .catch(next)
+    }
 })
 
 //1-search by category with distance sorting

@@ -161,7 +161,9 @@ Store.post('/addlocation/:business_id', async (req, res, next) => {
     console.error(userData);
 
     var reqaddress = await req.body.address
+    console.log("address info " +reqaddress)
     validation = await geoCoder.geocode(reqaddress)
+    console.log("info " +validation)
 
     if (validation.length < 1 || validation == undefined) {
         res.status(400).json({message: "invalid address"})
