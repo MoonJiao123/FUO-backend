@@ -29,7 +29,7 @@ const sessions = require('express-session')
 const Store = express.Router()
 const cors = require('cors')
 const store = require('../models/StoreModel.js')
-const items = require('../models/ProductModel.js')
+const item = require('../models/ProductModel.js')
 const business = require('../models/BusinessModel')
 const { Op } = require("sequelize");
 var Sequelize = require('sequelize');
@@ -220,38 +220,40 @@ Store.post('/addlocation/:business_id', async (req, res, next) => {
 })
 
 //07-delete location
-Store.delete('/deletelocation/:business_id/:store_id', async (req, res, next) => {
+Store.delete('/deletelocation/:business_id/:store_id',  async (req, res, next) => {
     // if(req.session.userType == null || req.session.userType != "business"){
     //     res.status(400).json({error:'Session was never created'});
     //     return;
     // }
     //The destroy method is use to delete selectec instance
 
-    // await items.destroy({
-    //     where: {
-    //     store_id: req.params.store_id
-    //     }
-    // }).then()
-
+    console.log("Inside store.delete")
     store.destroy({
         where: {
-            business_id: req.params.business_id,
-            store_id: req.params.store_id
+            store_id:req.params.store_id
         }
+    }).then(function (rowsUpdated) {
+        res.status(200).json(rowsUpdated)
+        console.log("itmes deleted before delete store")
     })
-        .then(function (rowsUpdated) {
-            // //delete product when delete the store
-            // request('https://fuo-backend.herokuapp.com/deleteallproduct/req.params.store_id', function (error) {
-            //     if (!error && response.statusCode == 200) {
-            //         console.log("deleted all prodcut of store_id" + req.params.store_id)
-            //     }
-            // })
-            res.status(200).json(rowsUpdated)
-        })
         .catch(next)
 
-
-
+    // store.destroy({
+    //     where: {
+    //         business_id: req.params.business_id,
+    //         store_id: req.params.store_id
+    //     }
+    // })
+    //     .then(function (rowsUpdated) {
+    //         //delete product when delete the store
+    //         // request('localhost:5000/deleteallproduct/req.params.store_id', function (error) {
+    //         //     if (!error && response.statusCode == 200) {
+    //         //         console.log("deleted all prodcut of store_id" + req.params.store_id)
+    //         //     }
+    //         // })
+    //         res.status(200).json(rowsUpdated)
+    //     })
+    //     .catch(next)
 
 })
 
