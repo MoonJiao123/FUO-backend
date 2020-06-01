@@ -27,7 +27,7 @@
  *
  * Shawn - just added res.status().json({}) messages
  * Darien - debug tweaks
- * Derek - implemented the logout function and added various session
+ * Derek - implemented the logout function
  */
 
 const express = require('express')
