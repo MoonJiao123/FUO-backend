@@ -30,6 +30,7 @@ const Store = express.Router()
 const cors = require('cors')
 const store = require('../models/StoreModel.js')
 const item = require('../models/ProductModel.js')
+const cart = require('../models/CartModel.js')
 const business = require('../models/BusinessModel')
 const { Op } = require("sequelize");
 var Sequelize = require('sequelize');
@@ -228,6 +229,30 @@ Store.delete('/deletelocation/:business_id/:store_id',  async (req, res, next) =
     //The destroy method is use to delete selectec instance
 
     console.log("Inside store.delete")
+
+    productIDs = await locateProductId(req.params.store_id)
+    console.log("productIDs", productIDs)
+
+    for(PID of productIDs){
+        cartIDs = await locateCartId(PID)
+        for (CID of cartIDs) {
+            console.log("deleting cartID: "+ CID)
+            await cart.destroy({
+                where:{
+                    cart_id: CID
+                }
+            })
+        }
+    }
+
+    for (PID of productIDs) {
+        await item.destroy({
+            where:{
+                product_id: PID
+            }
+        })
+    }
+
     store.destroy({
         where: {
             store_id:req.params.store_id
@@ -256,6 +281,38 @@ Store.delete('/deletelocation/:business_id/:store_id',  async (req, res, next) =
     //     .catch(next)
 
 })
+
+//================= functions to delete relative cart id while delete product==============
+//find product id from store
+async function locateProductId(storeID) {
+
+    listofProducts = await item.findAll({
+        where: {
+            store_id: storeID
+        }
+    })
+    productIds = listofProducts.map(anitem => {
+        return anitem.getDataValue('product_id')
+    })
+    productIds = await Promise.all(productIds)
+    return productIds
+}
+
+//find cart id from product
+async function locateCartId(productID) {
+
+    listofCarts = await cart.findAll({
+        where: {
+            product_id: productID
+        }
+    })
+    cartIds = listofCarts.map(ancartid => {
+        return ancartid.getDataValue('cart_id')
+    })
+    cartIds = await Promise.all(cartIds)
+    return cartIds
+}
+
 
 
 
