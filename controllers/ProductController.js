@@ -217,7 +217,7 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
             orderStatement = [['discounted_price', 'ASC']]
             break;
         case 'Expiration':
-            orderStatement = [['expire_date', 'ASC']]
+            orderStatement = [['expire_date', 'DESC']]
             break;
         default:
     }
