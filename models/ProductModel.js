@@ -46,7 +46,7 @@ var Product = db.sequelize.define(
       defaultValue: 0
     },
     discounted_price: {
-      type: Sequelize.DOUBLE,
+      type: DataTypes.DECIMAL(10,2),
       defaultValue: 0
     },
     expire_date: {
@@ -59,7 +59,7 @@ var Product = db.sequelize.define(
     },
     coupon: {
       type: Sequelize.STRING,
-      defaultValue: "None"
+      defaultValue: "50"
     },
     distance: {
        type: Sequelize.VIRTUAL
