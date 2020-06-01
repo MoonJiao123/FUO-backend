@@ -226,6 +226,7 @@ Store.delete('/deletelocation/:business_id/:store_id', async (req, res, next) =>
     //     return;
     // }
     //The destroy method is use to delete selectec instance
+
     // await items.destroy({
     //     where: {
     //     store_id: req.params.store_id
