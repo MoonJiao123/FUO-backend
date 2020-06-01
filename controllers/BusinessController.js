@@ -231,7 +231,7 @@ Store.delete('/deletelocation/:business_id/:store_id', async (req, res, next) =>
     //     where: {
     //     store_id: req.params.store_id
     //     }
-    // })
+    // }).then()
 
     store.destroy({
         where: {

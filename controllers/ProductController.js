@@ -38,6 +38,7 @@ const cors = require('cors')
 const item = require('../models/ProductModel.js')
 const store = require('../models/StoreModel.js')
 const customer = require('../models/CustomerModel.js')
+const business = require('../models/BusinessModel')
 const { Op } = require("sequelize");
 var nodeGeocoder = require('node-geocoder');
 var options = {provider: 'openstreetmap'};
@@ -240,6 +241,12 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
         item.findAll({
             attributes: ['discounted_price', 'expire_date', 'category', 'store_id', 'product_id', 'product_img', 'product_name', 'stock_amount'],
             where: whereStatement,
+            include: {
+                    model: store,
+                    attributes: ['address'],
+                    as: 'store_product',
+                    include:  {model: business, attributes: ['name']}
+                },
             order: orderStatement
         })
             .then(async (rowsUpdated) => {
