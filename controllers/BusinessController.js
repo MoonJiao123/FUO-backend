@@ -29,6 +29,7 @@ const sessions = require('express-session')
 const Store = express.Router()
 const cors = require('cors')
 const store = require('../models/StoreModel.js')
+const items = require('../models/ProductModel.js')
 const business = require('../models/BusinessModel')
 const { Op } = require("sequelize");
 var Sequelize = require('sequelize');
@@ -219,12 +220,18 @@ Store.post('/addlocation/:business_id', async (req, res, next) => {
 })
 
 //07-delete location
-Store.delete('/deletelocation/:business_id/:store_id', (req, res, next) => {
+Store.delete('/deletelocation/:business_id/:store_id', async (req, res, next) => {
     // if(req.session.userType == null || req.session.userType != "business"){
     //     res.status(400).json({error:'Session was never created'});
     //     return;
     // }
     //The destroy method is use to delete selectec instance
+    // await items.destroy({
+    //     where: {
+    //     store_id: req.params.store_id
+    //     }
+    // })
+
     store.destroy({
         where: {
             business_id: req.params.business_id,
