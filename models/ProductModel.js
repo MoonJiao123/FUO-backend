@@ -46,7 +46,7 @@ var Product = db.sequelize.define(
       defaultValue: 0
     },
     discounted_price: {
-      type: DataTypes.DECIMAL(10,2),
+      type: Sequelize.DOUBLE,
       defaultValue: 0
     },
     expire_date: {
