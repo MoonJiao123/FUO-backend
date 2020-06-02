@@ -108,12 +108,12 @@ Cart.post('/add/:customer_id/:product_id', (req, res) => {
         
                     }
                     else{
-                        res.status(400).json({ status: 'item already exists' })
+                        res.status(400).json({ status: 'Item already exists' })
                     }
                 })
                 .catch(err => {
                     //res.send('error: ' + err)
-                    res.status(400).json({ status: 'item does not exist'})
+                    res.status(400).json({ status: 'Item no longer exist'})
                     //console.log("err is in if statement")
                 })
         }
