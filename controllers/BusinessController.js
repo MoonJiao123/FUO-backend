@@ -230,6 +230,7 @@ Store.delete('/deletelocation/:business_id/:store_id',  async (req, res, next) =
 
     console.log("Inside store.delete")
 
+    //destroy cart_id that contain the item which is to be delete
     productIDs = await locateProductId(req.params.store_id)
     console.log("productIDs", productIDs)
 
@@ -245,6 +246,7 @@ Store.delete('/deletelocation/:business_id/:store_id',  async (req, res, next) =
         }
     }
 
+    //destroy product_id that that belongs to the location which is to be delete
     for (PID of productIDs) {
         await item.destroy({
             where:{
@@ -283,6 +285,7 @@ Store.delete('/deletelocation/:business_id/:store_id',  async (req, res, next) =
 })
 
 //================= functions to delete relative cart id while delete product==============
+
 //find product id from store
 async function locateProductId(storeID) {
 

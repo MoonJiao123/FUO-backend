@@ -39,6 +39,7 @@ const item = require('../models/ProductModel.js')
 const store = require('../models/StoreModel.js')
 const customer = require('../models/CustomerModel.js')
 const business = require('../models/BusinessModel')
+const cart = require('../models/CartModel.js')
 const { Op } = require("sequelize");
 var nodeGeocoder = require('node-geocoder');
 var options = {provider: 'openstreetmap'};
@@ -158,7 +159,21 @@ product.put('/update/:store_id', (req, res, next) => {
 })
 
 //product delete
-product.delete('/delete/:store_id/:product_id', (req, res, next) => {
+product.delete('/delete/:store_id/:product_id', async (req, res, next) => {
+
+    //destroy cart_id that contain the item which is to be delete
+    cartIDs = await locateCartId(req.params.product_id)
+
+    for (CID of cartIDs) {
+        console.log("deleting cartID: "+ CID)
+        await cart.destroy({
+            where:{
+                cart_id: CID
+            }
+        })
+    }
+
+
     //The destroy method is use to delete selected instance
     item.destroy({
         where: {
@@ -760,6 +775,23 @@ async function mask(items1, items2) {
     }
     //console.log("newItems.length "+ newItems.length)
     return newItems
+}
+
+//================= functions to delete relative cart id while delete product==============
+
+//find cart id from product
+async function locateCartId(productID) {
+
+    listofCarts = await cart.findAll({
+        where: {
+            product_id: productID
+        }
+    })
+    cartIds = listofCarts.map(ancartid => {
+        return ancartid.getDataValue('cart_id')
+    })
+    cartIds = await Promise.all(cartIds)
+    return cartIds
 }
 
 module.exports = product
