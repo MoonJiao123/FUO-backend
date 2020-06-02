@@ -265,7 +265,7 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
     }
     // console.log("product model attri: ", item.rawAttributes)
     if (!(req.params.low == 0 && req.params.high == 1000)) {
-        whereStatement.price = {[Op.between]: [req.params.low, req.params.high]}
+        whereStatement.discounted_price = {[Op.between]: [req.params.low, req.params.high]}
     }
     if (!(req.params.category=="None")) {
         whereStatement.category = req.params.category

@@ -73,6 +73,7 @@ Cart.post('/add/:customer_id/:product_id', (req, res) => {
     //     return;
     // }
     //check if product exist in product table
+
     console.log("productId "+req.params.product_id)
     product.findOne({ where: { product_id: req.params.product_id} })
     .then(product => {
