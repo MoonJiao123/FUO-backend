@@ -255,7 +255,7 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
         case 'Distance':
             orderStatement = []
             break;
-        case 'Price':
+        case 'Price': //using discounted_price
             orderStatement = [['discounted_price', 'ASC']]
             break;
         case 'Expiration':
