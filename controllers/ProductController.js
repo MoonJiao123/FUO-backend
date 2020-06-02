@@ -188,7 +188,7 @@ product.delete('/delete/:store_id/:product_id', async (req, res, next) => {
 })
 
 //product delete for all items
-product.delete('/deleteallproduct/:store_id', (req, res, next) => {
+product.delete('/deleteallproduct/:store_id', async (req, res, next) => {
     //The destroy method is use to delete selected instance
     //destroy cart_id that contain the item which is to be delete
 
