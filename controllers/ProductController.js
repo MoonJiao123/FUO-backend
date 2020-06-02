@@ -264,7 +264,7 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
         default:
     }
     // console.log("product model attri: ", item.rawAttributes)
-    if (!(req.params.low == 0 && req.params.high == 1000)) {
+    if (!(req.params.high == 1000)) {
         whereStatement.discounted_price = {[Op.between]: [req.params.low, req.params.high]}
     }
     if (!(req.params.category=="None")) {
@@ -273,12 +273,10 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
 
     whereStatement.product_name = {[Op.like]: '%' + tempName + '%'}
 
-    // console.log("whereStatement ", whereStatement)
-    // console.log("orderStatement ", orderStatement)
+    console.log("whereStatement ", whereStatement)
+    console.log("orderStatement ", orderStatement)
 
-    if (req.params.low > req.params.high) {
-        res.status(400).json({message: "invalid input for price range"})
-    } else {
+
         item.findAll({
             attributes: ['discounted_price', 'expire_date', 'category', 'store_id', 'product_id', 'product_img', 'product_name', 'stock_amount'],
             where: whereStatement,
@@ -289,6 +287,8 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
                     include:  {model: business, attributes: ['name']}
                 },
             order: orderStatement
+
+
         })
             .then(async (rowsUpdated) => {
                 // console.log('rowsUpdated.length '+rowsUpdated.length)
@@ -312,7 +312,7 @@ product.get('/:customer_id/:sortmode/:category/:name/:low/:high', async (req, re
                 }
             })
             .catch(next)
-    }
+
 })
 
 //1-search by category with distance sorting
@@ -565,12 +565,14 @@ async function updateCustomerCoord(customerID){
     // console.log('customerlat ', customerlat)
     // console.log('customerlong ', customerlong)
 
-    if ((customerlat == null) || (customerlong == null)) {
+    // if ((customerlat == null) || (customerlong == null)) {
+    if (true) {
         customerAddress = await customerInst.getDataValue('customer_location')
         result = await geoCoder.geocode(customerAddress)
-        //console.log("geocode result===================" + result)
-        var customerlat = result[result.length - 1].latitude
-        var customerlong = result[result.length - 1].longitude
+        console.log("customerAddress", customerAddress)
+        console.log("geocode result===================", result)
+        var customerlat = result[0].latitude
+        var customerlong = result[0].longitude
         await customerInst.setDataValue('customer_lat',customerlat)
         await customerInst.setDataValue('customer_long',customerlong)
         customerInst.save()
@@ -597,22 +599,19 @@ async function getStoreInfo(items, attri) {
     promises = items.map( async item => {
         pid = await item.getDataValue('product_id')
         sid = await item.getDataValue('store_id')
-        // console.log("item.product_id ", pid)
-        // console.log("item.store_id ", sid)
+        console.log("item.product_id ", pid)
+        console.log("item.store_id ", sid)
         if (sid == null) {
-            return null
+            val = null
         } else {
-            await store.findOne({
+            astore = await store.findOne({
                 where: {
                     store_id: sid
                 }
-            }).then(
-                async stores => {
-                    val = await stores.getDataValue(attri)
-                    // console.log("getting store value "+val)
-                })
-            return val
+            })
+            val = await astore.getDataValue(attri)
         }
+        return val
     })
 
     result = await Promise.all(promises)
@@ -631,10 +630,10 @@ async function getLL(customerID, items) {
     customerLat = await getCustomerData(customerID, 'customer_lat')
     customerLong = await getCustomerData(customerID, 'customer_long')
 
-    // console.log("customerLat "+customerLat)
-    // console.log("customerLong "+customerLong)
-    // console.log('storeLat '+storeLat)
-    // console.log('storeLong '+storeLong)
+    console.log("customerLat "+customerLat)
+    console.log("customerLong "+customerLong)
+    console.log('storeLat '+storeLat)
+    console.log('storeLong '+storeLong)
 
     Lat.push(customerLat)
     Lat = Lat.concat(storeLat)
@@ -703,11 +702,11 @@ async function sortByDist(customerID, items, numKeep=20) {
     //To get latitude and longitude of customer
     // console.log("in sortByDist, items[0]: ", items[0])
     LL = await getLL(customerID, items)
-    // console.log("LL "+LL)
+    console.log("LL "+LL)
 
     //To get the distances from products to customer
     dist = coord2dist(LL)
-    // console.log("dist "+dist)
+    console.log("dist "+dist)
 
     //To sort the distances and keep check of permutation
     perm = Array.from(Array(dist.length).keys())

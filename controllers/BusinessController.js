@@ -189,7 +189,7 @@ Store.post('/addlocation/:business_id', async (req, res, next) => {
                         .then((res) => {
                             console.error(res);
                             store.update(
-                                {store_lat: res[res.length - 1].latitude, store_long: res[res.length - 1].longitude},
+                                {store_lat: res[0].latitude, store_long: res[0].longitude},
                                 {
                                     where: {
                                         business_id: req.params.business_id,
