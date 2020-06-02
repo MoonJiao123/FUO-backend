@@ -569,8 +569,8 @@ async function updateCustomerCoord(customerID){
     if (true) {
         customerAddress = await customerInst.getDataValue('customer_location')
         result = await geoCoder.geocode(customerAddress)
-        console.log("customerAddress", customerAddress)
-        console.log("geocode result===================", result)
+        //console.log("customerAddress", customerAddress)
+        //console.log("geocode result===================", result)
         var customerlat = result[0].latitude
         var customerlong = result[0].longitude
         await customerInst.setDataValue('customer_lat',customerlat)
@@ -688,7 +688,8 @@ function coord2dist(LL) {
             a = Math.sin(dphi / 2) ** 2 + Math.cos(phis) * Math.cos(phic) * Math.sin(dlbd / 2) ** 2
             c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
             //round two decimal
-            dist[i] = ( R * c * 0.621371 ).toFixed(2);
+            //dist[i] = ( R * c * 0.621371 ).toFixed(2);
+            dist[i] = ( R * c * 0.621371 )
         }
     }
 
@@ -713,7 +714,7 @@ async function sortByDist(customerID, items, numKeep=20) {
     perm = Array.from(Array(dist.length).keys())
     associatedSort(dist, perm)
 
-    // console.log("sorted dist "+dist)
+    console.log("sorted dist "+dist)
     // console.log("perm "+perm)
 
     nitems = items.length
@@ -723,7 +724,7 @@ async function sortByDist(customerID, items, numKeep=20) {
     console.log("numKeep ", numKeep)
     console.log("Math.min(nitems, numKeep)", Math.min(nitems, numKeep))
     for (var i = 0; i < Math.min(nitems, numKeep); i++) {
-        await items[perm[i]].setDataValue('distance', dist[i])
+        await items[perm[i]].setDataValue('distance', dist[i].toFixed(2))
         newItems.push(items[perm[i]])
     }
     console.log("newItems.length ", newItems.length)
