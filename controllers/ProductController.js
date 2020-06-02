@@ -687,6 +687,7 @@ function coord2dist(LL) {
             dlbd = lbds - lbdc
             a = Math.sin(dphi / 2) ** 2 + Math.cos(phis) * Math.cos(phic) * Math.sin(dlbd / 2) ** 2
             c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+            //round two decimal
             dist[i] = ( R * c * 0.621371 ).toFixed(2);
         }
     }
