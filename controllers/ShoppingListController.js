@@ -80,7 +80,7 @@ Cart.post('/add/:customer_id/:product_id', (req, res) => {
         if (!product) {
             //The create method uilds a new model instance and calls save on it.
             //it generate its own token after it created the user
-            res.status(400).json({ status: 'item does not exist' })
+            res.status(400).json({ status: 'Item no longer exists.' })
 
         }
         else{
@@ -104,16 +104,16 @@ Cart.post('/add/:customer_id/:product_id', (req, res) => {
                         //The create method uilds a new model instance and calls save on it.
                         //it generate its own token after it created the user
                         list.create(userData)
-                        res.status(200).json({ status: 'Added item to cart' })
+                        res.status(200).json({ status: 'Added item to cart.' })
         
                     }
                     else{
-                        res.status(400).json({ status: 'Item already exists' })
+                        res.status(400).json({ status: 'Item already exists.' })
                     }
                 })
                 .catch(err => {
                     //res.send('error: ' + err)
-                    res.status(400).json({ status: 'Item no longer exist'})
+                    res.status(400).json({ status: 'Item no longer exists.'})
                     //console.log("err is in if statement")
                 })
         }
