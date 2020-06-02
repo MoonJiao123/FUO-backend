@@ -190,13 +190,39 @@ product.delete('/delete/:store_id/:product_id', async (req, res, next) => {
 //product delete for all items
 product.delete('/deleteallproduct/:store_id', (req, res, next) => {
     //The destroy method is use to delete selected instance
-    item.destroy({
-        where: {store_id: req.params.store_id},
-    })
-        .then(function (rowsUpdated) {
-            res.status(200).json(rowsUpdated)
+    //destroy cart_id that contain the item which is to be delete
+
+    productIDs = await locateProductId(req.params.store_id)
+    console.log("productIDs", productIDs)
+
+    for(PID of productIDs){
+        cartIDs = await locateCartId(PID)
+        for (CID of cartIDs) {
+            console.log("deleting cartID: "+ CID)
+            await cart.destroy({
+                where:{
+                    cart_id: CID
+                }
+            })
+        }
+    }
+
+    //destroy product_id that that belongs to the location which is to be delete
+    for (PID of productIDs) {
+        await item.destroy({
+            where:{
+                product_id: PID
+            }
         })
-        .catch(next)
+    }
+
+    // item.destroy({
+    //     where: {store_id: req.params.store_id},
+    // })
+    //     .then(function (rowsUpdated) {
+    //         res.status(200).json(rowsUpdated)
+    //     })
+    //     .catch(next)
 })
 
 //search by products belonging to a certain store
