@@ -113,8 +113,8 @@ Cart.post('/add/:customer_id/:product_id', (req, res) => {
                 })
                 .catch(err => {
                     //res.send('error: ' + err)
-                    res.status(400).json({ error: err }) //Shawn
-                    console.log("err is in if statement")
+                    res.status(400).json({ status: 'item does not exist'})
+                    //console.log("err is in if statement")
                 })
         }
     })
