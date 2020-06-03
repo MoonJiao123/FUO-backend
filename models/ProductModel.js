@@ -35,7 +35,7 @@ var Product = db.sequelize.define(
     }, 
     product_img: {
       type: Sequelize.STRING,
-      defaultValue: "None"
+      defaultValue: "https://corona-food.herokuapp.com/static/media/error.4e5e3349.png"
     },
     category: {
       type: Sequelize.STRING,
