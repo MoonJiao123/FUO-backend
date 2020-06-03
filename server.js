@@ -117,9 +117,9 @@ app.get('/api/getList', (req, res) => {
 })
 
 //access product_upload route
-var Location = require('./controllers/LocationController.js')
-
-app.use('/location', Location)
+// var Location = require('./controllers/LocationController.js')
+//
+// app.use('/location', Location)
 
 app.get('/api/getList', (req, res) => {
   var list = ["item1", "item2", "item3"];
