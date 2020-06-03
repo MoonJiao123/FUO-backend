@@ -10,14 +10,9 @@
  * This file is to DELETE the requested data of deleting locations from the business user.
  * 
  * Endpoints and Params:
- *  On products upload - (POST) /product/upload/:store_id
- *  On products update - (PUT) /product/update/:store_id
+ *  On products upload/upload - (POST) /product/upsert/:store_id/:product_id
  *  On products delete - (DELETE) /product/delete/:store_id/:product_id
- *  On item search - (GET) /product/category
- *                 - (GET) /product/:name/price/asc
- *                 - (GET) /product/:name/price/desc
- *                 - (GET) /product/:name/expire/asc
- *                 - (GET) /product/:name/expire/desc
+ *  On item search - (GET) /product/:customer_id/:sortmode/:category/:name/:low/:high
  * 
  * Parameters:
  *  -req: the request received via the POST request
