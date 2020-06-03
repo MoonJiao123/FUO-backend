@@ -114,6 +114,7 @@ app.use('/cart', Cart)
 
 app.get('/api/getList', (req, res) => {
   var list = ["item1", "item2", "item3"];
+
 })
 
 //access product_upload route
