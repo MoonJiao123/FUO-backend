@@ -4,7 +4,7 @@ This repository contains the backend implementation of the FUO application.
 
 Access our web application by heading over to [https://corona-food.herokuapp.com/landing.html](https://corona-food.herokuapp.com/landing.html).
 
-More information about the application can be found in "FUO: README.pdf".
+More information about the application can be found in [FUO: README.pdf](https://github.com/MoonJiao123/FUO-backend/blob/master/FUO_%20README.pdf).
 
 ## Installation
 
